@@ -33,7 +33,7 @@ export default class GraphAnalysisPlugin extends Plugin {
         if (checkResult) {
           // Only perform work when checking is false
           if (!checking) {
-            openView(this.app, VIEW_TYPE_GRAPH_ANALYSIS, AnalysisView)
+            openView(this.app as any, VIEW_TYPE_GRAPH_ANALYSIS, AnalysisView as any)
           }
           return true
         }
@@ -46,7 +46,9 @@ export default class GraphAnalysisPlugin extends Plugin {
       callback: async () => {
         await this.refreshGraph()
         const currView = await this.getCurrentView()
-        await currView.draw(currView.currSubtype)
+        if (currView && 'draw' in currView) {
+          await (currView as AnalysisView).draw((currView as AnalysisView).currSubtype)
+        }
       },
     })
 
@@ -56,7 +58,9 @@ export default class GraphAnalysisPlugin extends Plugin {
         name: `Open ${sub.subtype}`,
         callback: async () => {
           const currView = await this.getCurrentView()
-          await currView.draw(sub.subtype)
+          if (currView && 'draw' in currView) {
+            await (currView as AnalysisView).draw(sub.subtype)
+          }
         },
       })
     })
@@ -75,7 +79,7 @@ export default class GraphAnalysisPlugin extends Plugin {
       }
 
       await this.refreshGraph()
-      await openView(this.app, VIEW_TYPE_GRAPH_ANALYSIS, AnalysisView)
+      await openView(this.app as any, VIEW_TYPE_GRAPH_ANALYSIS, AnalysisView as any)
     })
   }
 
@@ -91,7 +95,7 @@ export default class GraphAnalysisPlugin extends Plugin {
 
     if (view) return view
     else if (openIfNot) {
-      return await openView(this.app, VIEW_TYPE_GRAPH_ANALYSIS, AnalysisView)
+      return await openView(this.app as any, VIEW_TYPE_GRAPH_ANALYSIS, AnalysisView as any)
     } else return null
   }
 

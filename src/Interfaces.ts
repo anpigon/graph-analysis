@@ -1,6 +1,5 @@
-import type { TFile } from 'obsidian'
+import type { TFile, ReferenceCache } from 'obsidian'
 import type { Bow, Document, WinkMethods } from 'wink-nlp'
-import { ReferenceCache } from 'obsidian'
 
 export interface ResolvedLinks {
   [from: string]: {
@@ -58,7 +57,7 @@ export interface ComponentResults {
   to: string
   resolved: boolean
   extra: any
-  img: Promise<ArrayBuffer>
+  img: Promise<ArrayBuffer> | null
 }
 
 export interface CoCitation {

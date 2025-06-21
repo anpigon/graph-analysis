@@ -16,7 +16,7 @@ export default class AnalysisView extends ItemView {
   ) {
     super(leaf)
     this.plugin = plugin
-    this.currSubtype = currSubtype
+    this.currSubtype = currSubtype || 'Co-Citations'
   }
 
   async onload(): Promise<void> {

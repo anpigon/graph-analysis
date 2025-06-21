@@ -23,7 +23,7 @@ import type {
   Subtype,
 } from 'src/Interfaces'
 import type GraphAnalysisPlugin from 'src/main'
-import { CoCitation } from 'src/Interfaces'
+import type { CoCitation } from 'src/Interfaces'
 
 export const sum = (arr: number[]) => {
   if (arr.length === 0) {
@@ -58,7 +58,7 @@ export const getExt = (path: string) => path.split('.').last()
 
 export const classExt = (path: string) => `GA-${getExt(path)}`
 export const classResolved = (app: App, node: string) =>
-  node.endsWith('.md') && !isInVault(app, dropExt(node)) ? 'is-unresolved' : ''
+  node.endsWith('.md') && !isInVault(app as any, dropExt(node)) ? 'is-unresolved' : ''
 export const classLinked = (
   resolvedLinks: ResolvedLinks,
   from: string,
@@ -66,7 +66,7 @@ export const classLinked = (
   directed = false
 ) => (isLinked(resolvedLinks, from, to, directed) ? LINKED : NOT_LINKED)
 
-export const presentPath = (path: string) => dropExt(dropPath(path))
+export const presentPath = (path: string) => dropExt(dropPath(path) || '')
 
 export const nxnArray = (n: number): undefined[][] =>
   [...Array(n)].map((e) => Array(n))
@@ -145,13 +145,13 @@ export const createOrUpdateYaml = async (
 export function openMenu(
   event: MouseEvent,
   app: App,
-  copyObj: { toCopy: string } = undefined
+  copyObj: { toCopy: string } | undefined = undefined
 ) {
   const tdEl = event.target
-  const menu = new Menu(app)
+  const menu = new (Menu as any)(app)
 
   if (copyObj) {
-    menu.addItem((item) =>
+    menu.addItem((item: any) =>
       item
         .setTitle('Copy community')
         .setIcon('graph')
@@ -160,13 +160,17 @@ export function openMenu(
         })
     )
   } else {
-    menu.addItem((item) =>
+    menu.addItem((item: any) =>
       item
         .setTitle('Create Link: Current')
         .setIcon('documents')
-        .onClick((e) => {
+        .onClick((e: any) => {
           try {
             const currFile = app.workspace.getActiveFile()
+            if (!currFile) {
+              new Notice('No active file')
+              return
+            }
             // @ts-ignore
             const targetStr = tdEl.innerText
             createOrUpdateYaml('key', targetStr, currFile, app)
@@ -178,12 +182,17 @@ export function openMenu(
         })
     )
 
-    menu.addItem((item) =>
+    menu.addItem((item: any) =>
       item
         .setTitle('Create Link: Target')
         .setIcon('documents')
-        .onClick((e) => {
-          const currStr = app.workspace.getActiveFile().basename
+        .onClick((e: any) => {
+          const currFile = app.workspace.getActiveFile()
+          if (!currFile) {
+            new Notice('No active file')
+            return
+          }
+          const currStr = currFile.basename
 
           const { target } = event
           // @ts-ignore
@@ -260,7 +269,7 @@ export function getPromiseResults(
   subtype: Subtype,
   resolvedLinks: ResolvedLinks,
   ascOrder = false
-): Promise<ComponentResults[]> {
+): Promise<ComponentResults[]> | null {
   if (!plugin.g || !currNode) return null
 
   const greater = ascOrder ? 1 : -1
@@ -274,7 +283,7 @@ export function getPromiseResults(
             measure: number
             extra: any
           }
-          const resolved = !to.endsWith('.md') || isInVault(app, to)
+          const resolved = !to.endsWith('.md') || isInVault(app as any, to)
           return {
             measure,
             linked: isLinked(resolvedLinks, currNode, to, false),
@@ -316,7 +325,7 @@ export function getMaxKey(obj: Record<string, number>) {
 }
 
 export const isImg = (path: string) =>
-  IMG_EXTENSIONS.includes(path.split('.').last())
+  IMG_EXTENSIONS.includes(path.split('.').last() || '')
 
 export async function openOrSwitch(
   app: App,
@@ -331,7 +340,7 @@ export async function openOrSwitch(
 
   // If dest doesn't exist, make it
   if (!destFile && options.createNewFile) {
-    destFile = await createNewMDNote(app, dest)
+    destFile = await createNewMDNote(app as any, dest) as any
   } else if (!destFile && !options.createNewFile) return
 
   // Check if it's already open
@@ -355,7 +364,9 @@ export async function openOrSwitch(
         ? workspace.splitActiveLeaf()
         : workspace.getUnpinnedLeaf()
 
-    await leaf.openFile(destFile, { active: true, mode })
+    if (destFile) {
+      await leaf.openFile(destFile, { active: true })
+    }
   }
 }
 
