@@ -17,7 +17,7 @@ import {
   clusteringCoefficient,
   gatherCommunities,
   intersection,
-} from 'src/GeneralGraphFn'
+} from './GeneralGraphFn'
 import type {
   AnalysisAlg,
   CoCitation,
@@ -28,8 +28,8 @@ import type {
   NLPPlugin,
   ResultMap,
   Subtype,
-} from 'src/Interfaces'
-import { addPreCocitation, findSentence, getCounts, getMaxKey, roundNumber, sum } from 'src/Utility'
+} from './Interfaces'
+import { addPreCocitation, findSentence, getCounts, getMaxKey, roundNumber, sum } from './Utility'
 import * as similarity from 'wink-nlp/utilities/similarity'
 
 export default class MyGraph extends Graph {
