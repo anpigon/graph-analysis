@@ -18,7 +18,7 @@ const context = await esbuild.context({
 	},
 	entryPoints: {
 		main: "src/main.ts",
-		styles: "src/global.css"
+		styles: "src/tailwind-entry.css"
 	},
 	bundle: true,
 	external: [

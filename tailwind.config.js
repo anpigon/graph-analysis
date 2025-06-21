@@ -4,7 +4,7 @@ module.exports = {
   prefix: 'ga-',
   
   content: [
-    "./src/**/*.{ts,tsx,svelte}",
+    "./src/**/*.{ts,tsx}",
     "./src/**/*.js",
   ],
   

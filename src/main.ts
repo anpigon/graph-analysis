@@ -12,6 +12,7 @@ import MyGraph from 'src/MyGraph'
 import { SampleSettingTab } from 'src/Settings'
 import { debug } from './Utility'
 
+import './tailwind-entry.css'
 
 export default class GraphAnalysisPlugin extends Plugin {
   settings: GraphAnalysisSettings
