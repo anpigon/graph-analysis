@@ -13,33 +13,51 @@ const Checkboxes: React.FC<CheckboxesProps> = ({
   plugin,
   settingName,
 }) => {
-  const [checked, setChecked] = React.useState<Subtype[]>(
+  const [selected, setSelected] = React.useState<Subtype[]>(
     plugin.settings[settingName]
   );
+  const [toNone, setToNone] = React.useState(selected.length === 0);
+
+  React.useEffect(() => {
+    setToNone(selected.length === 0);
+  }, [selected]);
 
   const handleChange = (option: Subtype) => {
-    const newChecked = checked.includes(option)
-      ? checked.filter((item) => item !== option)
-      : [...checked, option];
+    const newSelected = selected.includes(option)
+      ? selected.filter((item) => item !== option)
+      : [...selected, option];
     
-    setChecked(newChecked);
-    plugin.settings[settingName] = newChecked;
+    setSelected(newSelected);
+    plugin.settings[settingName] = newSelected;
+    plugin.saveSettings();
+  };
+
+  const handleToggleAll = () => {
+    const newSelected = toNone ? [] : options;
+    setSelected(newSelected);
+    plugin.settings[settingName] = newSelected;
     plugin.saveSettings();
   };
 
   return (
-    <div className="GA-checkboxes">
-      {options.map((option) => (
-        <div key={option} className="GA-checkbox-container">
-          <input
-            type="checkbox"
-            id={option}
-            checked={checked.includes(option)}
-            onChange={() => handleChange(option)}
-          />
-          <label htmlFor={option}>{option}</label>
-        </div>
-      ))}
+    <div>
+      <button onClick={handleToggleAll}>
+        Select {toNone ? 'None' : 'All'}
+      </button>
+      <div className="GA-grid">
+        {options.map((option) => (
+          <div key={option}>
+            <label>
+              <input
+                type="checkbox"
+                checked={selected.includes(option)}
+                onChange={() => handleChange(option)}
+              />
+              {option}
+            </label>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
