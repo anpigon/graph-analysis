@@ -1,6 +1,5 @@
-import { addIcon, Notice, Plugin, WorkspaceLeaf } from 'obsidian';
-import { openView, wait } from 'obsidian-community-lib';
-import AnalysisView from 'src/AnalysisView';
+import { addIcon, Notice, Plugin, WorkspaceLeaf } from 'obsidian'
+import AnalysisView from 'src/AnalysisView'
 import {
   ANALYSIS_TYPES,
   DEFAULT_SETTINGS,
@@ -11,8 +10,7 @@ import type { GraphAnalysisSettings } from 'src/Interfaces'
 import MyGraph from 'src/MyGraph'
 import { SampleSettingTab } from 'src/Settings'
 import { debug } from './Utility'
-
-import './tailwind-entry.css'
+import "@/tailwind-entry.css";
 
 export default class GraphAnalysisPlugin extends Plugin {
   settings: GraphAnalysisSettings
@@ -28,7 +26,7 @@ export default class GraphAnalysisPlugin extends Plugin {
       id: 'show-graph-analysis-view',
       name: 'Open Graph Analysis View',
       callback: () => {
-        this.activateView();
+        this.activateView()
       },
     })
 
@@ -39,7 +37,9 @@ export default class GraphAnalysisPlugin extends Plugin {
         await this.refreshGraph()
         const currView = await this.getCurrentView()
         if (currView && 'draw' in currView) {
-          await (currView as AnalysisView).draw((currView as AnalysisView).currSubtype)
+          await (currView as AnalysisView).draw(
+            (currView as AnalysisView).currSubtype
+          )
         }
       },
     })
@@ -65,9 +65,9 @@ export default class GraphAnalysisPlugin extends Plugin {
     )
 
     this.app.workspace.onLayoutReady(async () => {
-      await this.refreshGraph();
-      this.activateView();
-    });
+      await this.refreshGraph()
+      this.activateView()
+    })
   }
 
   resolvedLinksComplete(noFiles: number) {
@@ -78,30 +78,30 @@ export default class GraphAnalysisPlugin extends Plugin {
   getCurrentView = async (openIfNot = true) => {
     const view = this.app.workspace.getLeavesOfType(
       VIEW_TYPE_GRAPH_ANALYSIS
-    )?.[0]?.view as AnalysisView;
+    )?.[0]?.view as AnalysisView
 
-    if (view) return view;
+    if (view) return view
     else if (openIfNot) {
-      this.activateView();
+      this.activateView()
       return this.app.workspace.getLeavesOfType(VIEW_TYPE_GRAPH_ANALYSIS)?.[0]
-        ?.view as AnalysisView;
-    } else return null;
-  };
+        ?.view as AnalysisView
+    } else return null
+  }
 
   async activateView() {
-    this.app.workspace.detachLeavesOfType(VIEW_TYPE_GRAPH_ANALYSIS);
+    this.app.workspace.detachLeavesOfType(VIEW_TYPE_GRAPH_ANALYSIS)
 
-    const rightLeaf = this.app.workspace.getRightLeaf(false);
+    const rightLeaf = this.app.workspace.getRightLeaf(false)
     if (rightLeaf) {
       await rightLeaf.setViewState({
         type: VIEW_TYPE_GRAPH_ANALYSIS,
         active: true,
-      });
+      })
     }
 
-    const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_GRAPH_ANALYSIS)[0];
+    const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_GRAPH_ANALYSIS)[0]
     if (leaf) {
-      this.app.workspace.revealLeaf(leaf);
+      this.app.workspace.revealLeaf(leaf)
     }
   }
 
