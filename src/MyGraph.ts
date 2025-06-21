@@ -189,9 +189,10 @@ export default class MyGraph extends Graph {
         if (!file) return
 
         const cache = mdCache.getFileCache(file)
+        if (!cache) return
 
         const preCocitations: { [name: string]: [number, CoCitation[]] } = {}
-        const allLinks = [...cache.links]
+        const allLinks = [...(cache.links || [])]
         if (cache.embeds) {
           allLinks.push(...cache.embeds)
         }
@@ -231,7 +232,7 @@ export default class MyGraph extends Graph {
 
         // Find the section the link is in
         const ownSections = ownLinks.map((link) =>
-          cache.sections.find(
+          cache.sections?.find(
             (section) =>
               section.position.start.line <= link.position.start.line &&
               section.position.end.line >= link.position.end.line
@@ -249,8 +250,9 @@ export default class MyGraph extends Graph {
             maxHeadingLevel = Math.max(maxHeadingLevel, heading.level)
             // The link falls under this header!
             if (heading.position.start.line <= link.position.start.line) {
-              for (const j of Array(cache.headings.length - index - 1).keys()) {
-                let nextHeading = cache.headings[j + index + 1]
+              for (const j of Array((cache.headings?.length || 0) - index - 1).keys()) {
+                let nextHeading = cache.headings?.[j + index + 1]
+                if (!nextHeading) continue
                 // Scan for the next header with at least as low of a level
                 if (nextHeading.level >= heading.level) {
                   if (
@@ -280,7 +282,7 @@ export default class MyGraph extends Graph {
           coCiteCandidates.push(...cache.tags)
         }
         coCiteCandidates.forEach((item) => {
-          let linkPath: string = null
+          let linkPath: string | null = null
           if ('link' in item) {
             const linkFile = mdCache.getFirstLinkpathDest(
               getLinkpath((item as ReferenceCache)?.link ?? '') ?? '',
@@ -305,6 +307,8 @@ export default class MyGraph extends Graph {
           } else if ('tag' in item) {
             linkPath = (item as TagCache).tag
           } else return
+
+          if (!linkPath) return
 
           // Initialize to 0 if not set yet
           if (!(linkPath in preCocitations)) {
@@ -361,13 +365,15 @@ export default class MyGraph extends Graph {
                 measure = 0.6
               }
 
-              preCocitations[linkPath][0] = Math.max(measure, preCocitations[linkPath][0])
-              preCocitations[linkPath][1].push({
-                sentence: slicedSentence,
-                measure,
-                source: pre,
-                line: lineSentence.line,
-              })
+              if (linkPath) {
+                preCocitations[linkPath][0] = Math.max(measure, preCocitations[linkPath][0])
+                preCocitations[linkPath][1].push({
+                  sentence: slicedSentence,
+                  measure,
+                  source: pre,
+                  line: lineSentence.line,
+                })
+              }
 
               // We have to run this for every OwnSentence since there might be multiple on the same line
               hasOwnLine = true
@@ -382,7 +388,7 @@ export default class MyGraph extends Graph {
           ]
 
           // Check if in an outline hierarchy
-          const listItem: ListItemCache =
+          const listItem: ListItemCache | undefined =
             cache?.listItems?.find((listItem) =>
                 item.position.start.line >= listItem.position.start.line &&
                 item.position.end.line <= listItem.position.end.line
@@ -391,7 +397,7 @@ export default class MyGraph extends Graph {
           if (listItem) {
             ownListItems.forEach((ownListItem) => {
               // Shared parent is good!
-              if (ownListItem.parent === listItem.parent) {
+              if (ownListItem.parent === listItem.parent && linkPath) {
                 addPreCocitation(preCocitations, linkPath, 0.4, sentence, pre, item.position.start.line)
                 foundHierarchy = true
                 return
@@ -420,13 +426,17 @@ export default class MyGraph extends Graph {
                     else if (distance === 4) {
                       measure = 0.35
                     }
-                    addPreCocitation(preCocitations, linkPath, measure, sentence, pre, item.position.start.line)
+                    if (linkPath) {
+                      addPreCocitation(preCocitations, linkPath, measure, sentence, pre, item.position.start.line)
+                    }
                     return true
                   }
                   distance += 1
                   // Move to the parent
-                  iterListItem = cache.listItems.find((litem) =>
+                  const foundItem = cache.listItems?.find((litem) =>
                     iterListItem.parent === litem.position.start.line)
+                  if (!foundItem) break
+                  iterListItem = foundItem
                 }
                 return false
               }
@@ -441,10 +451,11 @@ export default class MyGraph extends Graph {
           // Check if it is in the same paragraph
           const sameParagraph = ownSections.find(
             (section) =>
+              section &&
               section.position.start.line <= item.position.start.line &&
               section.position.end.line >= item.position.end.line
           )
-          if (sameParagraph) {
+          if (sameParagraph && linkPath) {
             addPreCocitation(preCocitations, linkPath, 1 / 4, sentence, pre, item.position.start.line)
             return
           }
@@ -455,7 +466,7 @@ export default class MyGraph extends Graph {
               heading.position.start.line <= item.position.start.line &&
               end > item.position.end.line
           )
-          if (headingMatches.length > 0) {
+          if (headingMatches.length > 0 && linkPath) {
             const bestLevel = Math.max(
               ...headingMatches.map(([heading, _]) => heading.level)
             )
@@ -468,27 +479,32 @@ export default class MyGraph extends Graph {
           }
 
           // The links appear together in the same document, but not under a shared heading
-          addPreCocitation(preCocitations, linkPath, minScore, sentence, pre, item.position.start.line)
+          if (linkPath) {
+            addPreCocitation(preCocitations, linkPath, minScore, sentence, pre, item.position.start.line)
+          }
         })
 
-        if (settings.coTags) {
-          getAllTags(cache).forEach((tag) => {
-            if (!(tag in preCocitations)) {
-              // Tag defined in YAML. Gets the lowest score (has no particular position)
+        if (settings.coTags && cache) {
+          const tags = getAllTags(cache)
+          if (tags) {
+            tags.forEach((tag) => {
+              if (!(tag in preCocitations)) {
+                // Tag defined in YAML. Gets the lowest score (has no particular position)
 
-              preCocitations[tag] = [
-                minScore,
-                [
-                  {
-                    measure: minScore,
-                    sentence: ['', '', ''],
-                    source: pre,
-                    line: 0,
-                  },
-                ],
-              ]
-            }
-          })
+                preCocitations[tag] = [
+                  minScore,
+                  [
+                    {
+                      measure: minScore,
+                      sentence: ['', '', ''],
+                      source: pre,
+                      line: 0,
+                    },
+                  ],
+                ]
+              }
+            })
+          }
         }
 
         // Add the found weights to the results
@@ -597,7 +613,7 @@ export default class MyGraph extends Graph {
         }
         const targetBoW = nlp.getNoStopBoW(Docs[to])
 
-        const measure = similarity.bow.cosine(sourceBoW, targetBoW)
+        const measure = (similarity as any).bow?.cosine?.(sourceBoW, targetBoW) || 0
         results[to] = {
           measure,
           extra: [],
@@ -645,7 +661,7 @@ export default class MyGraph extends Graph {
         }
         const targetSet = nlp.getNoStopSet(Docs[to])
 
-        const measure = similarity.set.oo(sourceSet, targetSet)
+        const measure = (similarity as any).set?.oo?.(sourceSet, targetSet) || 0
         results[to] = {
           measure,
           extra: [],

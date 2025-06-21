@@ -26,10 +26,10 @@ export class SampleSettingTab extends PluginSettingTab {
       .setDesc('Which analysis type to show on startup')
       .addDropdown((dd) => {
         dd.setValue(settings.defaultSubtypeType)
-        const dict = {}
-        settings.algsToShow.forEach((subtype) => {
-          dict[subtype] = subtype
-        })
+    const dict: { [key: string]: Subtype } = {}
+    ANALYSIS_TYPES.forEach((subtype) => {
+      dict[subtype.subtype] = subtype.subtype
+    })
         dd.addOptions(dict).onChange(async (option) => {
           settings.defaultSubtypeType = option as Subtype
           await plugin.saveSettings()
