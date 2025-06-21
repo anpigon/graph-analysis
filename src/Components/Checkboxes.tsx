@@ -16,33 +16,31 @@ const Checkboxes: React.FC<CheckboxesProps> = ({
   const [selected, setSelected] = React.useState<Subtype[]>(
     plugin.settings[settingName]
   );
-  const [toNone, setToNone] = React.useState(selected.length === 0);
+  const [hasSelection, setHasSelection] = React.useState(selected.length > 0);
 
   React.useEffect(() => {
-    setToNone(selected.length === 0);
+    setHasSelection(selected.length > 0);
+    // 선택 상태 변경 시 설정 자동 저장
+    plugin.settings[settingName] = selected;
+    plugin.saveSettings();
   }, [selected]);
 
   const handleChange = (option: Subtype) => {
     const newSelected = selected.includes(option)
       ? selected.filter((item) => item !== option)
       : [...selected, option];
-    
     setSelected(newSelected);
-    plugin.settings[settingName] = newSelected;
-    plugin.saveSettings();
   };
 
   const handleToggleAll = () => {
-    const newSelected = toNone ? [] : options;
+    const newSelected = hasSelection ? [] : options; // hasSelection이 true면 전체 해제
     setSelected(newSelected);
-    plugin.settings[settingName] = newSelected;
-    plugin.saveSettings();
   };
 
   return (
-    <div>
+    <div className='space-y-2'>
       <button onClick={handleToggleAll}>
-        Select {toNone ? 'None' : 'All'}
+        Select {hasSelection ? 'None' : 'All'}
       </button>
       <div className="GA-grid">
         {options.map((option) => (
