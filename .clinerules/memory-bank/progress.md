@@ -34,11 +34,12 @@
 - **Clustering Coefficient**: Triangle-based local clustering analysis
 
 ### User Interface ✅
-- **Table-Based Results**: Clean, sortable interface for all analysis types
-- **Expandable Details**: Co-citation context viewing with sentence extraction
-- **Infinite Scroll**: Performance optimization for large result sets
+- **Table-Based Results**: Clean, sortable interface with outliner support
+- **Expandable Details**: Co-citation context viewing with markdown rendering
+- **Infinite Scroll**: Performance optimization for large result sets  
 - **Hover Previews**: Quick note previews without navigation
 - **Responsive Design**: Works on both desktop and mobile platforms
+- **Accessibility**: Improved ordered lists and footnotes styling
 
 ### Technical Architecture ✅
 - **MyGraph Class**: Robust graph data structure extending graphology

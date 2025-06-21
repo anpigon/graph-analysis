@@ -43,21 +43,26 @@
 ### Obsidian Integration
 ```json
 "obsidian": "^0.12.17"              // Obsidian API types and interfaces
-"obsidian-community-lib": "1.2.0"   // Community utilities for plugin development
+"obsidian-community-lib": "2.0.2"   // Community utilities for plugin development
+"react": "^19.0.0",                 // React UI library
+"react-dom": "^19.0.0",             // React DOM rendering
+"react-icons": "^5.5.0",            // Icon components
+"react-infinite-scroll-component": "^6.1.0" // Infinite scroll implementation
 ```
 
 ## Development Setup
 
 ### Build Configuration
-- **Rollup Config**: Configured for TypeScript, Svelte, and Obsidian plugin output
-- **TypeScript Config**: Strict type checking with Svelte support
-- **Svelte Preprocessing**: TypeScript integration and component compilation
+- **Vite Config**: Configured for React, TypeScript, and Obsidian plugin output
+- **TypeScript Config**: Strict type checking with React support
+- **Tailwind CSS**: Integrated for UI styling
+- **PostCSS**: Configured for CSS processing
 
 ### Development Scripts
 ```json
-"dev": "rollup --config rollup.config.js -w"                    // Watch mode development
-"build": "rollup --config rollup.config.js --environment BUILD:production"  // Production build
-"release": "standard-version"                                    // Automated releases
+"dev": "vite build --watch"                    // Watch mode development with Vite
+"build": "vite build"                          // Production build with Vite
+"release": "standard-version"                  // Automated releases
 ```
 
 ## Technical Constraints

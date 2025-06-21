@@ -6,6 +6,18 @@
 **Current Priority**: Memory bank initialization and documentation maintenance
 
 ## Recent Changes
+- **Version 0.15.4 (2022-01-31)**: Stable release with minor improvements
+- **Version 0.15.3 (2022-01-12)**:
+  - UI: Algorithm selector now hidden when only 1 algorithm is active
+  - Bug Fixes: Improved ordered lists and footnotes styling
+- **Version 0.15.2 (2022-01-10)**:
+  - Bug Fixes: Fixed invalid Markdown rendering in co-citations for child bullets
+- **Version 0.15.1 (2022-01-10)**:
+  - Features: Added outliner support to co-citations
+  - Features: Increased granularity for co-citations on the same line
+  - Features: Sort equal-measure co-citations alphabetically
+  - Features: Text previews in Co-Citations now render markdown
+  - Bug Fixes: Multiple co-citation sorting and rendering issues fixed
 - **Memory Bank Creation**: Establishing comprehensive documentation system
 - **Project Analysis**: Complete review of codebase structure and functionality
 - **Documentation**: Creating structured memory bank for future development context
@@ -29,10 +41,11 @@
 - **Community Detection**: Label Propagation and Louvain algorithms functional
 
 ### UI/UX Current State
-- **Table Interface**: Clean, sortable results presentation
-- **Expandable Details**: Co-citation context viewing works well
+- **Table Interface**: Clean, sortable results presentation with outliner support
+- **Expandable Details**: Co-citation context viewing with markdown rendering
 - **Performance**: Infinite scroll handles large result sets
 - **Integration**: Seamless Obsidian workspace integration
+- **Accessibility**: Improved ordered lists and footnotes styling
 
 ## Important Patterns and Preferences
 
