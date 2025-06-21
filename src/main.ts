@@ -12,6 +12,7 @@ import MyGraph from 'src/MyGraph'
 import { SampleSettingTab } from 'src/Settings'
 import { debug } from './Utility'
 
+
 export default class GraphAnalysisPlugin extends Plugin {
   settings: GraphAnalysisSettings
   g: MyGraph
