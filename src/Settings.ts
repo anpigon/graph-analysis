@@ -16,10 +16,11 @@ export class SampleSettingTab extends PluginSettingTab {
 
   display(): void {
     const plugin = this.plugin
-    let { containerEl } = this
+    const { containerEl } = this
     const { settings } = plugin
 
     containerEl.empty()
+    containerEl.addClass('graph-analysis-plugin')
 
     containerEl.createEl('h3', { text: 'Analysis Defaults' })
 

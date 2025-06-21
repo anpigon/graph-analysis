@@ -38,7 +38,7 @@ const Checkboxes: React.FC<CheckboxesProps> = ({
   };
 
   return (
-    <div className='ga-mb-2 mb-2'>
+    <div className='ga-space-y-2 ga-mb-2'>
       <button onClick={handleToggleAll}>
         Select {hasSelection ? 'None' : 'All'}
       </button>
