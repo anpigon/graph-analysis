@@ -10,7 +10,6 @@ import {
 import {
   copy,
   createNewMDNote,
-  isInVault,
   isLinked,
   ResolvedLinks,
 } from 'obsidian-community-lib'
@@ -71,9 +70,14 @@ export const presentPath = (path: string) => dropExt(dropPath(path) || '')
 export const nxnArray = (n: number): undefined[][] =>
   [...Array(n)].map((e) => Array(n))
 
+export function isInVault(app: App, file: string): boolean {
+  const f = app.vault.getAbstractFileByPath(file)
+  return f !== null
+}
+
 export function hoverPreview(
-  event: MouseEvent,
-  view: AnalysisView,
+  event: any,
+  view: any,
   to: string
 ): void {
   const targetEl = event.target as HTMLElement
@@ -330,7 +334,7 @@ export const isImg = (path: string) =>
 export async function openOrSwitch(
   app: App,
   dest: string,
-  event: MouseEvent,
+  event: any,
   options: {
     createNewFile: boolean
   } = { createNewFile: true }

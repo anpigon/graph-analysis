@@ -1,6 +1,6 @@
-import { addIcon, Notice, Plugin, WorkspaceLeaf } from 'obsidian'
-import { openView, wait } from 'obsidian-community-lib'
-import AnalysisView from 'src/AnalysisView'
+import { addIcon, Notice, Plugin, WorkspaceLeaf } from 'obsidian';
+import { openView, wait } from 'obsidian-community-lib';
+import AnalysisView from 'src/AnalysisView';
 import {
   ANALYSIS_TYPES,
   DEFAULT_SETTINGS,
@@ -25,18 +25,8 @@ export default class GraphAnalysisPlugin extends Plugin {
     this.addCommand({
       id: 'show-graph-analysis-view',
       name: 'Open Graph Analysis View',
-      checkCallback: (checking: boolean) => {
-        let checkResult =
-          this.app.workspace.getLeavesOfType(VIEW_TYPE_GRAPH_ANALYSIS)
-            .length === 0
-
-        if (checkResult) {
-          // Only perform work when checking is false
-          if (!checking) {
-            openView(this.app as any, VIEW_TYPE_GRAPH_ANALYSIS, AnalysisView as any)
-          }
-          return true
-        }
+      callback: () => {
+        this.activateView();
       },
     })
 
@@ -73,14 +63,9 @@ export default class GraphAnalysisPlugin extends Plugin {
     )
 
     this.app.workspace.onLayoutReady(async () => {
-      const noFiles = this.app.vault.getMarkdownFiles().length
-      while (!this.resolvedLinksComplete(noFiles)) {
-        await wait(1000)
-      }
-
-      await this.refreshGraph()
-      await openView(this.app as any, VIEW_TYPE_GRAPH_ANALYSIS, AnalysisView as any)
-    })
+      await this.refreshGraph();
+      this.activateView();
+    });
   }
 
   resolvedLinksComplete(noFiles: number) {
@@ -91,12 +76,31 @@ export default class GraphAnalysisPlugin extends Plugin {
   getCurrentView = async (openIfNot = true) => {
     const view = this.app.workspace.getLeavesOfType(
       VIEW_TYPE_GRAPH_ANALYSIS
-    )?.[0]?.view as AnalysisView
+    )?.[0]?.view as AnalysisView;
 
-    if (view) return view
+    if (view) return view;
     else if (openIfNot) {
-      return await openView(this.app as any, VIEW_TYPE_GRAPH_ANALYSIS, AnalysisView as any)
-    } else return null
+      this.activateView();
+      return this.app.workspace.getLeavesOfType(VIEW_TYPE_GRAPH_ANALYSIS)?.[0]
+        ?.view as AnalysisView;
+    } else return null;
+  };
+
+  async activateView() {
+    this.app.workspace.detachLeavesOfType(VIEW_TYPE_GRAPH_ANALYSIS);
+
+    const rightLeaf = this.app.workspace.getRightLeaf(false);
+    if (rightLeaf) {
+      await rightLeaf.setViewState({
+        type: VIEW_TYPE_GRAPH_ANALYSIS,
+        active: true,
+      });
+    }
+
+    const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_GRAPH_ANALYSIS)[0];
+    if (leaf) {
+      this.app.workspace.revealLeaf(leaf);
+    }
   }
 
   async refreshGraph() {

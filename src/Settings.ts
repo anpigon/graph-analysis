@@ -1,8 +1,10 @@
-import { App, Notice, PluginSettingTab, Setting } from 'obsidian'
-import { ANALYSIS_TYPES } from 'src/Constants'
-import type { Subtype } from 'src/Interfaces'
-import type GraphAnalysisPlugin from 'src/main'
-import Checkboxes from './Components/Checkboxes.svelte'
+import { App, Notice, PluginSettingTab, Setting } from 'obsidian';
+import { ANALYSIS_TYPES } from 'src/Constants';
+import type { Subtype } from 'src/Interfaces';
+import type GraphAnalysisPlugin from 'src/main';
+import * as React from 'react';
+import { createRoot } from 'react-dom/client';
+import Checkboxes from './Components/Checkboxes';
 
 export class SampleSettingTab extends PluginSettingTab {
   plugin: GraphAnalysisPlugin
@@ -36,15 +38,16 @@ export class SampleSettingTab extends PluginSettingTab {
         })
       })
 
-    containerEl.createEl('h3', { text: 'Algorithms to Show' })
-    new Checkboxes({
-      target: containerEl,
-      props: {
+    containerEl.createEl('h3', { text: 'Algorithms to Show' });
+    const checkboxesContainer = containerEl.createDiv();
+    const root = createRoot(checkboxesContainer);
+    root.render(
+      React.createElement(Checkboxes, {
         options: ANALYSIS_TYPES.map((type) => type.subtype),
         plugin,
         settingName: 'algsToShow',
-      },
-    })
+      })
+    );
 
     new Setting(containerEl)
       .setName('Exclude Infinity')

@@ -1,9 +1,8 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
-
   "compilerOptions": {
     "baseUrl": ".",
     "inlineSources": true,
+    "sourceMap": true,
     "module": "ESNext",
     "target": "ES6",
     "allowJs": true,
@@ -14,6 +13,7 @@
     "isolatedModules": true,
     "strictNullChecks": true,
     "importsNotUsedAsValues": "remove",
+    "jsx": "react-jsx",
     "lib": [
       "DOM",
       "ES5",
@@ -21,11 +21,12 @@
       "ES7",
       "ES2019"
     ],
-    "types": ["node", "svelte"],
+    "types": ["node", "react", "react-dom"],
     "paths": {
       "src": ["src/*"]
-    }
+    },
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "src/sbd.d.ts"],
   "exclude": ["node_modules/*"]
 }

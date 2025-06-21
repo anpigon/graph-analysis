@@ -12,6 +12,7 @@ import {
 } from 'obsidian'
 import { getAllTags, getLinkpath } from 'obsidian'
 import tokenizer from 'sbd'
+
 import {
   clusteringCoefficient,
   gatherCommunities,
