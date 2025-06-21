@@ -4,8 +4,8 @@
   "description": "Analyse your Obsidian graph",
   "main": "main.js",
   "scripts": {
-    "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && rollup --config rollup.config.js --environment BUILD:production",
+    "dev": "rollup --config rollup.config.js -w",
+    "build": "rollup --config rollup.config.js --environment BUILD:production",
     "version": "standard-version"
   },
   "standard-version": {
