@@ -148,7 +148,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
           view={view}
           noZero={noZero}
           setNoZero={(value) => {
-            settings.noZero = value;
+            settings.noZero = value === true;
             plugin.saveSettings();
           }}
           sortedResults={sortedResults}

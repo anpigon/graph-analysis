@@ -98,6 +98,22 @@
       overflow: hidden;
     }
   }
+
+  .GA-Subtype-Options {
+    margin-left: 10px;
+
+    .icon {
+      color: var(--text-normal);
+      display: inline-block;
+      padding-top: 5px !important;
+      width: 20px;
+      height: 20px;
+    }
+
+    .GA-Option-span {
+      padding: 2px;
+    }
+  }
 }
 
 /* 모바일 특화 스타일 */

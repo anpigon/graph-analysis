@@ -160,16 +160,16 @@ const SubtypeOptions: React.FC<SubtypeOptionsProps> = ({
   };
 
   return (
-    <div style={styles.subtypeOptions}>
+    <div className="GA-Subtype-Options">
       <InfoIcon currSubtypeInfo={currSubtypeInfo} />
 
       {noZero !== undefined && setNoZero && (
         <span
-          style={styles.optionSpan}
+          className="GA-Option-span"
           aria-label={noZero ? 'Show Zeros' : 'Hide Zeros'}
           onClick={handleNoZeroToggle}
         >
-          <span style={styles.icon}>
+          <span className="icon">
             {noZero ? <MdExposureZero /> : <FaCreativeCommonsZero />}
           </span>
         </span>
@@ -177,11 +177,11 @@ const SubtypeOptions: React.FC<SubtypeOptionsProps> = ({
 
       {ascOrder !== undefined && (
         <span
-          style={styles.optionSpan}
+          className="GA-Option-span"
           aria-label={ascOrder ? 'Ascending' : 'Descending'}
           onClick={handleAscOrderToggle}
         >
-          <span style={styles.icon}>
+          <span className="icon">
             {ascOrder ? <IoIosTrendingUp /> : <IoIosTrendingDown />}
           </span>
         </span>
@@ -189,11 +189,11 @@ const SubtypeOptions: React.FC<SubtypeOptionsProps> = ({
 
       {frozen !== undefined && setFrozen && (
         <span
-          style={styles.optionSpan}
+          className="GA-Option-span"
           aria-label={frozen ? `Frozen on: ${currFile ? currFile.split('/').pop() || 'No file' : 'No file'}` : 'Unfrozen'}
           onClick={handleFrozenToggle}
         >
-          <span style={styles.icon}>
+          <span className="icon">
             {frozen ? <FaRegSnowflake /> : <FaFire />}
           </span>
         </span>
