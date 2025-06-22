@@ -49,7 +49,7 @@ const ImgThumbnail: React.FC<ImgThumbnailProps> = ({ img, className = '' }) => {
   if (status === 'loading') return <div className={`GA-img-loading ${className}`}>Loading...</div>;
 
   return (
-    <div className={`GA-img-container ${className}`}>
+    <div className={`GA-img-container GA-img ${className}`}>
       <img 
         src={imgSrc!} 
         className="GA-img-thumbnail" 
