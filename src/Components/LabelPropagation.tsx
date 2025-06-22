@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import type { App } from 'obsidian';
 import { hoverPreview, isLinked } from 'obsidian-community-lib';
 import type AnalysisView from '../AnalysisView';
@@ -48,6 +48,7 @@ const LabelPropagation: React.FC<LabelPropagationProps> = ({
 }) => {
   const [ascOrder, setAscOrder] = useState(false);
   const [its, setIts] = useState(20);
+  const [blockSwitch, setBlockSwitch] = useState(false);
   const [currNode, setCurrNode] = useState(app.workspace.getActiveFile()?.path || '');
   const [sortedResults, setSortedResults] = useState<ComponentResults[]>([]);
   const [visibleData, setVisibleData] = useState<ComponentResults[]>([]);
@@ -57,7 +58,11 @@ const LabelPropagation: React.FC<LabelPropagationProps> = ({
 
   useEffect(() => {
     const handleActiveLeafChange = () => {
-      setCurrNode(app.workspace.getActiveFile()?.path || '');
+      setBlockSwitch(true);
+      setTimeout(() => {
+        setBlockSwitch(false);
+        setCurrNode(app.workspace.getActiveFile()?.path || '');
+      }, 100);
     };
     app.workspace.on('active-leaf-change', handleActiveLeafChange);
     return () => {
@@ -65,40 +70,52 @@ const LabelPropagation: React.FC<LabelPropagationProps> = ({
     };
   }, [app]);
 
-  useEffect(() => {
-    if (!plugin.g) return;
+  const processResults = useCallback((comms: Communities) => {
+    const greater = ascOrder ? 1 : -1;
+    const lesser = ascOrder ? -1 : 1;
 
-    plugin.g.algs[currSubtype]('', { iterations: its }).then(
-      (comms: Communities) => {
-        const greater = ascOrder ? 1 : -1;
-        const lesser = ascOrder ? -1 : 1;
-
-        const componentResults: ComponentResults[] = [];
-        Object.keys(comms).forEach((label) => {
-          let comm = comms[label];
-          if (comm.length > 1) {
-            componentResults.push({ label, comm });
-          }
-        });
-        componentResults.sort((a, b) =>
-          a.comm.length > b.comm.length ? greater : lesser
-        );
-        
-        setSortedResults(componentResults);
-        setVisibleData(componentResults.slice(0, size));
-        setPage(1);
+    const componentResults: ComponentResults[] = [];
+    Object.keys(comms).forEach((label) => {
+      const comm = comms[label];
+      if (comm.length > 1) {
+        componentResults.push({ label, comm });
       }
+    });
+    return componentResults.sort((a, b) =>
+      a.comm.length > b.comm.length ? greater : lesser
     );
-  }, [plugin.g, ascOrder, its, currSubtype]);
+  }, [ascOrder]);
 
-  const loadMoreData = () => {
-    const nextPage = page + 1;
-    const nextBatch = sortedResults.slice(page * size, nextPage * size);
-    setVisibleData((prev) => [...prev, ...nextBatch]);
-    setPage(nextPage);
-  };
+  useEffect(() => {
+    if (!plugin.g || blockSwitch) return;
 
-  const currSubtypeInfo = ANALYSIS_TYPES.find((sub) => sub.subtype === currSubtype);
+    plugin.g.algs[currSubtype]('', { iterations: its })
+      .then(processResults)
+      .then((results) => {
+        setSortedResults(results);
+        setVisibleData(results.slice(0, size));
+        setPage(1);
+      });
+  }, [plugin.g, ascOrder, its, currSubtype, blockSwitch, processResults]);
+
+  const loadMoreData = useCallback(() => {
+    if (!blockSwitch && sortedResults.length > visibleData.length) {
+      const nextPage = page + 1;
+      const nextBatch = sortedResults.slice(page * size, nextPage * size);
+      setVisibleData((prev) => [...prev, ...nextBatch]);
+      setPage(nextPage);
+    }
+  }, [blockSwitch, page, size, sortedResults, visibleData.length]);
+
+  const handleNodeClick = useCallback(async (e: React.MouseEvent, member: string) => {
+    e.stopPropagation();
+    await openOrSwitch(app, member, e.nativeEvent);
+  }, [app]);
+
+  const currSubtypeInfo = useMemo(() => 
+    ANALYSIS_TYPES.find((sub) => sub.subtype === currSubtype) || ANALYSIS_TYPES[0],
+    [currSubtype]
+  );
 
   return (
     <div className="GA-CCs" ref={currentComponentRef}>
@@ -120,14 +137,20 @@ const LabelPropagation: React.FC<LabelPropagationProps> = ({
             min="1"
             max="30"
             value={its}
-            onChange={(e) => setIts(Number(e.target.value))}
+            onChange={(e) => {
+              setBlockSwitch(true);
+              setVisibleData([]);
+              setPage(0);
+              setTimeout(() => setBlockSwitch(false), 100);
+              setIts(Number(e.target.value));
+            }}
           />
         </span>
       </div>
       <InfiniteScroll
         dataLength={visibleData.length}
         next={loadMoreData}
-        hasMore={visibleData.length < sortedResults.length}
+        hasMore={visibleData.length < sortedResults.length && !blockSwitch}
         loader={<h4>Loading...</h4>}
         scrollableTarget={currentComponentRef.current?.parentElement?.id || undefined}
       >
@@ -158,7 +181,7 @@ const LabelPropagation: React.FC<LabelPropagationProps> = ({
                       comm.label,
                       member
                     )} ${classResolved(app, member)} ${classExt(member)}`}
-                    onClick={async (e) => await openOrSwitch(app, member, e.nativeEvent)}
+                    onClick={(e) => handleNodeClick(e, member)}
                     onMouseOver={(e: React.MouseEvent) => hoverPreview(e.nativeEvent, view as any, member)}
                   >
                     {isLinked(
@@ -168,7 +191,7 @@ const LabelPropagation: React.FC<LabelPropagationProps> = ({
                       false
                     ) && (
                       <span className={ICON}>
-                        {React.createElement(FaLink as React.FC)}
+                        <FaLink />
                       </span>
                     )}
                     <ExtensionIcon path={member} />

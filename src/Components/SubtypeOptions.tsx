@@ -32,7 +32,7 @@ interface SubtypeOptionsProps {
   setAscOrder: React.Dispatch<React.SetStateAction<boolean>>;
   frozen?: boolean;
   setFrozen?: React.Dispatch<React.SetStateAction<boolean>>;
-  currFile: TFile | null;
+  currFile: string | null;
   app: App;
   plugin: GraphAnalysisPlugin;
   view: AnalysisView;
@@ -190,7 +190,7 @@ const SubtypeOptions: React.FC<SubtypeOptionsProps> = ({
       {frozen !== undefined && setFrozen && (
         <span
           style={styles.optionSpan}
-          aria-label={frozen ? `Frozen on: ${currFile?.basename || 'No file'}` : 'Unfrozen'}
+          aria-label={frozen ? `Frozen on: ${currFile ? currFile.split('/').pop() || 'No file' : 'No file'}` : 'Unfrozen'}
           onClick={handleFrozenToggle}
         >
           <span style={styles.icon}>
