@@ -338,3 +338,61 @@ mark.CC-mark {
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
 }
+
+/* HITS 컴포넌트 스타일 */
+@layer components {
+  .ga-hits-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .ga-hits-table,
+  .ga-hits-table tr,
+  .ga-hits-table td {
+    border: 1px solid var(--background-modifier-border);
+  }
+
+  .ga-hits-table th,
+  .ga-hits-table td {
+    padding: 8px;
+    text-align: left;
+  }
+
+  .ga-hits-table th {
+    background-color: var(--background-primary-alt);
+  }
+
+  .ga-unresolved {
+    color: var(--text-muted);
+    opacity: 0.7;
+  }
+
+  .ga-node {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ga-current-node {
+    font-weight: bold;
+    color: var(--text-accent);
+  }
+
+  .ga-hits-scroll-container {
+    height: 70vh;
+    overflow: auto;
+    margin-top: 10px;
+  }
+
+  .ga-internal-link {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .ga-internal-link:hover {
+    text-decoration: underline;
+  }
+
+  .ga-hits-table tr:hover {
+    background-color: var(--background-primary-alt);
+  }
+}

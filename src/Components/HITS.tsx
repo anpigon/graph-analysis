@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import type { App } from 'obsidian';
+import type { App, ItemView } from 'obsidian';
 import { hoverPreview } from 'obsidian-community-lib';
 import { isInVault } from '../Utility';
 import type AnalysisView from '../AnalysisView';
@@ -55,12 +55,18 @@ const HITS: React.FC<HITSProps> = ({
   const [sortedResults, setSortedResults] = useState<ComponentResults[]>([]);
   const [visibleData, setVisibleData] = useState<ComponentResults[]>([]);
   const [page, setPage] = useState(0);
+  const [blockSwitch, setBlockSwitch] = useState(false);
   const size = 50;
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const currentComponentRef = useRef<HTMLTableElement>(null);
 
   useEffect(() => {
     const handleActiveLeafChange = () => {
-      setCurrNode(app.workspace.getActiveFile()?.path || '');
+      setBlockSwitch(true);
+      setTimeout(() => {
+        setBlockSwitch(false);
+        setCurrNode(app.workspace.getActiveFile()?.path || '');
+      }, 100);
     };
     app.workspace.on('active-leaf-change', handleActiveLeafChange);
     return () => {
@@ -105,16 +111,18 @@ const HITS: React.FC<HITSProps> = ({
   }, [plugin.g, ascOrder, sortBy, app, plugin.settings.showImgThumbnails]);
 
   const loadMoreData = () => {
-    const nextPage = page + 1;
-    const nextBatch = sortedResults.slice(page * size, nextPage * size);
-    setVisibleData((prev) => [...prev, ...nextBatch]);
-    setPage(nextPage);
+    if (!blockSwitch) {
+      const nextPage = page + 1;
+      const nextBatch = sortedResults.slice(page * size, nextPage * size);
+      setVisibleData((prev) => [...prev, ...nextBatch]);
+      setPage(nextPage);
+    }
   };
 
-  const currSubtypeInfo = ANALYSIS_TYPES.find((sub) => sub.subtype === currSubtype);
+  const currSubtypeInfo = ANALYSIS_TYPES.find((sub) => sub.subtype === currSubtype) || ANALYSIS_TYPES[0];
 
   return (
-    <div>
+    <div ref={scrollContainerRef} className="hits-scroll-container" id="scrollableDiv">
       <SubtypeOptions
         currSubtypeInfo={currSubtypeInfo}
         ascOrder={ascOrder}
@@ -125,15 +133,17 @@ const HITS: React.FC<HITSProps> = ({
         app={app}
         plugin={plugin}
         view={view}
+        blockSwitch={blockSwitch}
+        setBlockSwitch={setBlockSwitch}
       />
       <InfiniteScroll
         dataLength={visibleData.length}
         next={loadMoreData}
         hasMore={visibleData.length < sortedResults.length}
         loader={<h4>Loading...</h4>}
-        scrollableTarget={currentComponentRef.current?.parentElement?.id || undefined}
+        scrollableTarget="scrollableDiv"
       >
-        <table className="GA-table markdown-preview-view" ref={currentComponentRef}>
+        <table className="ga-hits-table markdown-preview-view" ref={currentComponentRef}>
           <thead>
             <tr>
               <th scope="col">Note</th>
@@ -143,17 +153,19 @@ const HITS: React.FC<HITSProps> = ({
           </thead>
           <tbody>
             {visibleData.map((node, index) => (
-              <tr key={index} className={classExt(node.to)}>
+              <tr key={`${node.to}-${index}`} className={`${classExt(node.to)} ga-node`}>
                 <td
                   onClick={async (e) => await openOrSwitch(app, node.to, e.nativeEvent)}
                   onContextMenu={(e) => openMenu(e.nativeEvent, app)}
-                  onMouseOver={(e: React.MouseEvent) => hoverPreview(e.nativeEvent, view as any, dropPath(node.to) ?? '')}
+                  onMouseOver={(e: React.MouseEvent) => 
+                  hoverPreview(e.nativeEvent, view as unknown as Parameters<typeof hoverPreview>[1], dropPath(node.to) ?? '')
+                }
                 >
                   <ExtensionIcon path={node.to} />
                   <span
-                    className={`internal-link ${
-                      node.resolved ? '' : 'is-unresolved'
-                    } ${currNode === node.to ? 'currNode' : ''}`}
+                    className={`ga-internal-link ${
+                      node.resolved ? '' : 'ga-unresolved'
+                    } ${currNode === node.to ? 'ga-current-node' : ''}`}
                   >
                     {presentPath(node.to)}
                   </span>
