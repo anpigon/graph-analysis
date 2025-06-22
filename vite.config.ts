@@ -1,3 +1,4 @@
+import { styles } from 'ScrollSeclctor.module.css';
 import { UserConfig, defineConfig } from 'vite'
 import path from 'path'
 import builtins from 'builtin-modules'
@@ -9,10 +10,11 @@ const copyManifestPlugin = {
   closeBundle: async () => {
     try {
       await fs.copy('manifest.json', 'dist/manifest.json')
-      if (process.env.NODE_ENV === 'development') {
-        await fs.writeFile('dist/.hotreload', '')
-      }
       console.log('✅ manifest.json copied to dist/')
+      if (process.env.NODE_ENV === 'development') {
+        await fs.copy("./dist/main.js", "./main.js")
+        await fs.copy("./dist/styles.css", "./styles.css")
+      }
     } catch (err) {
       console.error('❌ Error copying manifest:', err)
     }
