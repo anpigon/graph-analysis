@@ -4,13 +4,13 @@
 
 ### Primary Stack
 - **TypeScript**: Main development language for type safety and Obsidian API integration
-- **Svelte**: UI framework for reactive components and efficient rendering
+- **React**: UI library for component-based architecture using JSX/TSX
 - **Graphology**: Mathematical graph library providing data structures and algorithms
 - **Obsidian API**: Plugin platform integration for vault access and UI components
 
 ### Development Environment
 - **Node.js**: Runtime environment for build tools and development
-- **Rollup**: Module bundler with Svelte integration
+- **Vite**: Next-generation frontend tooling with React integration
 - **pnpm**: Package manager for dependency management
 - **Standard Version**: Automated versioning and changelog generation
 
@@ -33,9 +33,10 @@
 
 ### UI and Utilities
 ```json
-"svelte": "3.35.0"                    // UI framework
-"svelte-icons": "^2.1.0"             // Icon components
-"svelte-infinite-scroll": "^2.0.0"   // Performance optimization
+"react": "^19.0.0"                    // UI library
+"react-dom": "^19.0.0"               // React DOM rendering
+"react-icons": "^5.5.0"             // Icon components
+"react-infinite-scroll-component": "^6.1.0"   // Performance optimization
 "lodash.isequal": "^4.5.0"           // Deep equality checking
 "sanitize-html": "^2.5.2"            // HTML sanitization
 ```
@@ -89,11 +90,11 @@
 - Specialized algorithms for community detection
 
 ### UI Framework Choice
-**Why Svelte**:
-- Lightweight runtime suitable for Obsidian plugins
+**Why React**:
+- Component reusability and modular architecture
+- Virtual DOM for efficient updates
+- Strong ecosystem and community support
 - Excellent TypeScript integration
-- Reactive updates without virtual DOM overhead
-- Component-based architecture for maintainability
 
 ### Language Choice
 **Why TypeScript**:
@@ -117,7 +118,7 @@ import { MetadataCache, Vault, App } from 'obsidian'
 const graph = new MyGraph(app, settings)
 await graph.initGraph()  // Build from Obsidian metadata
 const results = algorithm.execute(graph, targetNote)
-component.render(results)  // Display in Svelte UI
+component.render(results)  // Display in React UI
 ```
 
 ### Error Handling Strategy
