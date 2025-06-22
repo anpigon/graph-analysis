@@ -62,6 +62,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
   const [sortedResults, setSortedResults] = useState<ComponentResults[]>([]);
   const [visibleData, setVisibleData] = useState<ComponentResults[]>([]);
   const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const size = 50;
   const currentComponentRef = useRef<HTMLTableElement>(null);
 
@@ -73,9 +74,10 @@ const TableComponent: React.FC<TableComponentProps> = ({
         setCurrNode(app.workspace.getActiveFile()?.path || '');
       }
     };
-    app.workspace.on('active-leaf-change', handleActiveLeafChange);
+    const workspace = app.workspace;
+    workspace.on('active-leaf-change', handleActiveLeafChange);
     return () => {
-      app.workspace.off('active-leaf-change', handleActiveLeafChange);
+      workspace.off('active-leaf-change', handleActiveLeafChange);
     };
   }, [app, frozen, currSubtypeInfo]);
 
@@ -159,45 +161,50 @@ const TableComponent: React.FC<TableComponentProps> = ({
             </tr>
           </thead>
           <tbody>
-            {visibleData
-              .filter(
-                (node) =>
-                  (currSubtypeInfo?.global || node.to !== currNode) &&
-                  node !== undefined
-              )
-              .map((node, index) => (
-                <tr
-                  key={index}
-                  className={`${
-                    node.linked ? LINKED : NOT_LINKED
-                  } ${classExt(node.to)}`}
+      {isLoading ? (
+        <tr>
+          <td colSpan={2}>Loading analysis data...</td>
+        </tr>
+      ) : (
+        visibleData
+          .filter(
+            (node) =>
+              (currSubtypeInfo?.global || node.to !== currNode) &&
+              node !== undefined
+          )
+          .map((node) => (
+            <tr
+              key={node.to}
+              className={`${
+                node.linked ? LINKED : NOT_LINKED
+              } ${classExt(node.to)}`}
+            >
+              <td
+                aria-label={node.extra.map(presentPath).join('\n')}
+                onClick={async (e) => await openOrSwitch(app, node.to, e.nativeEvent)}
+                onContextMenu={(e) => openMenu(e.nativeEvent, app)}
+                onMouseOver={(e) =>
+                  hoverPreview(e.nativeEvent, view as any, dropPath(node.to) ?? ''
+                )}
+              >
+                {node.linked && (
+                  <span className={ICON}>
+                    {React.createElement(FaLink as React.FC)}
+                  </span>
+                )}
+                <ExtensionIcon path={node.to} />
+                <span
+                  className={`internal-link ${
+                    node.resolved ? '' : 'is-unresolved'
+                  }`}
                 >
-                  <td
-                    aria-label={node.extra.map(presentPath).join('\n')}
-                    onClick={async (e) => await openOrSwitch(app, node.to, e.nativeEvent)}
-                    onContextMenu={(e) => openMenu(e.nativeEvent, app)}
-                    onMouseOver={(e) =>
-                      hoverPreview(e.nativeEvent, view as any, dropPath(node.to) ?? '')
-                    }
-                  >
-                    {node.linked && (
-                      <span className={ICON}>
-                        {React.createElement(FaLink as React.FC)}
-                      </span>
-                    )}
-                    <ExtensionIcon path={node.to} />
-                    <span
-                      className={`internal-link ${
-                        node.resolved ? '' : 'is-unresolved'
-                      }`}
-                    >
-                      {presentPath(node.to)}
-                    </span>
-                    {isImg(node.to) && <ImgThumbnail img={node.img} />}
-                  </td>
-                  <td className={MEASURE}>{node.measure}</td>
-                </tr>
-              ))}
+                  {presentPath(node.to)}
+                </span>
+                {isImg(node.to) && <ImgThumbnail img={node.img} />}
+              </td>
+              <td className={MEASURE}>{node.measure}</td>
+            </tr>
+          )))}
           </tbody>
         </table>
       </InfiniteScroll>
