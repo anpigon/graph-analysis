@@ -93,6 +93,58 @@
     margin-right: 4px;
     vertical-align: middle;
   }
+
+  /* ImgThumbnail 스타일 */
+  .GA-img-container {
+    display: inline-block;
+    overflow: hidden;
+    margin: 4px;
+    position: relative;
+  }
+
+  .GA-img-thumbnail {
+    max-width: 25%;
+    max-height: 25%;
+    transition: all 0.3s ease;
+    display: block;
+    cursor: pointer;
+    object-fit: contain;
+  }
+
+  .GA-img-thumbnail:hover {
+    max-width: 100%;
+    max-height: 100%;
+    z-index: 10;
+    position: relative;
+  }
+
+  .GA-img-loading,
+  .GA-img-error {
+    padding: 8px;
+    color: #666;
+    font-size: 0.8em;
+    text-align: center;
+    border: 1px dashed #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+  }
+
+  .GA-img-error {
+    color: #d32f2f;
+    border-color: #ffcdd2;
+    background-color: #ffebee;
+  }
+
+  .GA-img-loading::after {
+    content: "...";
+    animation: dots 1.5s steps(5, end) infinite;
+  }
+
+  @keyframes dots {
+    0%, 20% { content: "."; }
+    40% { content: ".."; }
+    60%, 100% { content: "..."; }
+  }
   
   /* 스크롤바 스타일 */
   .ga-scrollbar::-webkit-scrollbar {

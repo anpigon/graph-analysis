@@ -2,34 +2,60 @@ import * as React from 'react';
 
 interface ImgThumbnailProps {
   img: Promise<ArrayBuffer> | null;
+  className?: string;
 }
 
-const ImgThumbnail: React.FC<ImgThumbnailProps> = ({ img }) => {
+const ImgThumbnail: React.FC<ImgThumbnailProps> = ({ img, className = '' }) => {
+  const [status, setStatus] = React.useState<'loading'|'loaded'|'error'>('loading');
   const [imgSrc, setImgSrc] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    if (!img) return;
+    if (!img) {
+      setStatus('error');
+      return;
+    }
 
-    img.then(buffer => {
-      if (!buffer) return;
-      
-      const blob = new Blob([buffer]);
-      const url = URL.createObjectURL(blob);
-      setImgSrc(url);
-      
-      return () => URL.revokeObjectURL(url);
-    });
+    const controller = new AbortController();
+    let objectUrl: string | null = null;
+
+    const loadImage = async () => {
+      try {
+        setStatus('loading');
+        const buffer = await img;
+        
+        if (controller.signal.aborted) return;
+        if (!buffer) throw new Error('Invalid image data');
+
+        const blob = new Blob([buffer], { type: 'image/jpeg' });
+        objectUrl = URL.createObjectURL(blob);
+        setImgSrc(objectUrl);
+        setStatus('loaded');
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error('Image loading failed:', error);
+          setStatus('error');
+        }
+      }
+    };
+
+    loadImage();
+    return () => {
+      controller.abort();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [img]);
 
-  if (!imgSrc) return null;
+  if (status === 'error') return <div className={`GA-img-error ${className}`}>Image load failed</div>;
+  if (status === 'loading') return <div className={`GA-img-loading ${className}`}>Loading...</div>;
 
   return (
-    <img 
-      src={imgSrc} 
-      className="GA-img-thumbnail" 
-      alt="Thumbnail" 
-      style={{ maxWidth: '50px', maxHeight: '50px' }}
-    />
+    <div className={`GA-img-container ${className}`}>
+      <img 
+        src={imgSrc!} 
+        className="GA-img-thumbnail" 
+        alt="Thumbnail"
+      />
+    </div>
   );
 };
 
