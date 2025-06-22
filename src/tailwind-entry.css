@@ -71,6 +71,10 @@
       @apply ga-bg-interactive-accent;
     }
   }
+
+  .info-icon {
+    @apply ga-w-5 ga-h-5 ga-text-text-normal ga-pt-1 ga-inline-block;
+  }
 }
 
 /* 모바일 특화 스타일 */
