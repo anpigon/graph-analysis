@@ -170,6 +170,10 @@
       font-weight: bold;
     }
   }
+
+  .RenderedMarkdown.CC-sentence {
+    @apply ga-pl-10 ga-text-text-muted;
+  }
 }
 
 /* 모바일 특화 스타일 */

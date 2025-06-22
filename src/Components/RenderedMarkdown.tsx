@@ -41,7 +41,6 @@ const RenderedMarkdown: React.FC<RenderedMarkdownProps> = ({
         new Component()
       );
 
-      // Svelte 버전과 동일한 DOM 조작
       container.querySelectorAll('mark').forEach(el => {
         el.classList.add('CC-mark');
       });
@@ -57,7 +56,7 @@ const RenderedMarkdown: React.FC<RenderedMarkdownProps> = ({
   return (
     <div
       ref={containerRef}
-      className="CC-sentence"
+      className="RenderedMarkdown CC-sentence"
       onClick={handleClick}
     />
   );
