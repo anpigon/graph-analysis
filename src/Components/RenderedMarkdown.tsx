@@ -56,7 +56,6 @@ const RenderedMarkdown: React.FC<RenderedMarkdownProps> = ({
   return (
     <div
       ref={containerRef}
-      className="RenderedMarkdown CC-sentence"
       onClick={handleClick}
     />
   );

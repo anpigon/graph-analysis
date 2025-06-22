@@ -147,7 +147,7 @@
       padding-left: 40px;
       color: var(--text-muted);
     }
-    .top-row span + span {
+    .top-row span + span.GA-measure {
       float: right;
     }
 
@@ -157,6 +157,7 @@
       border-radius: 3px;
       font-size: 12px;
       line-height: 12px;
+      /* @apply ga-ml-auto */
     }
     span.GA-measure:hover {
       background-color: var(--interactive-accent);
@@ -171,8 +172,59 @@
     }
   }
 
-  .RenderedMarkdown.CC-sentence {
-    @apply ga-pl-10 ga-text-text-muted;
+  .GA-CC {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+
+    .is-unresolved {
+      color: var(--text-muted);
+    }
+
+    .tag {
+      border-radius: 15px !important;
+    }
+
+    .GA-node,
+    .CC-sentence {
+      font-size: var(--font-size-secondary);
+      border: 1px solid transparent;
+      border-radius: 5px;
+    }
+
+    .CC-sentence:hover {
+      background-color: var(--background-secondary-alt);
+    }
+    span.GA-measure {
+      background-color: var(--background-secondary-alt);
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 12px;
+      line-height: 12px;
+    }
+    span.GA-measure:hover {
+      background-color: var(--interactive-accent);
+    }
+
+    .CC-item {
+      padding-left: 30px;
+      font-weight: 600;
+    }
+
+    .top-row > span + span {
+      float: right;
+    }
+
+    .top-row .GA-icon {
+      @apply ga-mr-1;
+      svg {
+        @apply ga-w-3 ga-h-3;
+      }
+    }
+
+    .currComm {
+      color: var(--text-accent);
+    }
   }
 }
 
@@ -190,5 +242,13 @@
   .GA-img img:hover {
     max-width: 100%;
     max-height: 100%;
+  }
+
+  .GA-icon {
+    color: var(--text-normal);
+    width: 13px;
+    height: 13px;
+    display: inline-block;
+    padding-top: 2px !important;
   }
 }
