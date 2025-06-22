@@ -26,21 +26,16 @@ const AnalysisComponent: React.FC<AnalysisComponentProps> = (props) => {
     setCurrentSubtype(subtype);
   };
 
-  const updatedProps = {
-    ...props,
-    currSubtype: currentSubtype
-  };
-
   const renderAnalysisComponent = () => {
     switch (currentSubtype) {
       case 'Co-Citations':
-        return <CoCitations {...updatedProps} />;
+        return <CoCitations {...props} currSubtype={currentSubtype} />;
       case 'HITS':
-        return <HITS {...updatedProps} />;
+        return <HITS {...props} currSubtype={currentSubtype} />;
       case 'Label Propagation':
-        return <LabelPropagation {...updatedProps} />;
+        return <LabelPropagation {...props} currSubtype={currentSubtype} />;
       case 'Louvain':
-        return <Louvain {...updatedProps} />;
+        return <Louvain {...props} currSubtype={currentSubtype} />;
       case 'Jaccard':
       case 'Overlap':
       case 'Adamic Adar':
@@ -48,9 +43,9 @@ const AnalysisComponent: React.FC<AnalysisComponentProps> = (props) => {
       case 'BoW':
       case 'Otsuka-Chiai':
       case 'Sentiment':
-        return <TableComponent {...updatedProps} />;
+        return <TableComponent {...props} currSubtype={currentSubtype} />;
       default:
-        return <div>Unsupported analysis type: {currentSubtype}</div>;
+        return null;
     }
   };
 
