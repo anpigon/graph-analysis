@@ -1,3 +1,10 @@
+/* 
+ * 코딩 규칙:
+ * 1. UI 스타일은 TailwindCSS를 우선적으로 사용합니다 (prefix: 'ga-')
+ * 2. 추가적인 CSS는 이 파일에 작성해주세요
+ * 3. Tailwind로 처리하기 어려운 복잡한 스타일만 여기에 정의
+ */
+
 /* Tailwind CSS 기본 설정 */
 @tailwind base;
 @tailwind components;

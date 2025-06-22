@@ -1,4 +1,6 @@
 export default {
+  // UI는 TailwindCSS를 사용합니다
+  // 추가적인 CSS는 src/tailwind-entry.css에 작성해주세요
   prefix: 'ga-',
 
   content: ['./src/**/*.{ts,tsx}'],
