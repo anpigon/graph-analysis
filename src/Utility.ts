@@ -23,6 +23,7 @@ import type {
   Subtype,
 } from 'src/Interfaces'
 import type GraphAnalysisPlugin from 'src/main'
+// @ts-expect-error
 import { CoCitation } from 'src/Interfaces'
 
 export const sum = (arr: number[]) => {

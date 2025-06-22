@@ -6,16 +6,20 @@
   export let plugin: GraphAnalysisPlugin
   export let settingName: string
   export let options: string[]
+  // @ts-expect-error
   let selected = plugin.settings[settingName] as string[]
 
   let toNone = selected.length === 0 ? false : true
   $: toNone = selected.length === 0 ? false : true
 
   async function save() {
+    // @ts-expect-error
     if (plugin.settings[settingName] === undefined) {
       return console.log(settingName + ' not found in BC settings')
     }
 
+
+    // @ts-expect-error
     plugin.settings[settingName] = selected
     await plugin.saveSettings()
   }

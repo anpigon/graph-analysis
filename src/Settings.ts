@@ -28,6 +28,7 @@ export class SampleSettingTab extends PluginSettingTab {
         dd.setValue(settings.defaultSubtypeType)
         const dict = {}
         settings.algsToShow.forEach((subtype) => {
+          // @ts-expect-error
           dict[subtype] = subtype
         })
         dd.addOptions(dict).onChange(async (option) => {

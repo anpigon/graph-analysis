@@ -597,6 +597,7 @@ export default class MyGraph extends Graph {
         }
         const targetBoW = nlp.getNoStopBoW(Docs[to])
 
+        // @ts-expect-error
         const measure = similarity.bow.cosine(sourceBoW, targetBoW)
         results[to] = {
           measure,
@@ -645,6 +646,7 @@ export default class MyGraph extends Graph {
         }
         const targetSet = nlp.getNoStopSet(Docs[to])
 
+        // @ts-expect-error
         const measure = similarity.set.oo(sourceSet, targetSet)
         results[to] = {
           measure,

@@ -1,5 +1,6 @@
 import type { TFile } from 'obsidian'
 import type { Bow, Document, WinkMethods } from 'wink-nlp'
+// @ts-expect-error
 import { ReferenceCache } from 'obsidian'
 
 export interface ResolvedLinks {
