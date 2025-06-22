@@ -1,6 +1,6 @@
 import React from 'react';
 import type { SubtypeInfo } from '../Interfaces';
-import { FaQuestionCircle } from 'react-icons/fa';
+import { FaRegQuestionCircle } from 'react-icons/fa';
 
 interface InfoIconProps {
   currSubtypeInfo: SubtypeInfo;
@@ -15,7 +15,7 @@ const InfoIcon: React.FC<InfoIconProps> = ({ currSubtypeInfo }) => {
       aria-label={`Type: ${anl}\n\n${desc}`}
       title={`Type: ${anl}\n\n${desc}`}
     >
-      {React.createElement(FaQuestionCircle as React.FC)}
+      <FaRegQuestionCircle />
     </div>
   );
 };
