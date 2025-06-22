@@ -1,5 +1,7 @@
-import type { TFile, ReferenceCache } from 'obsidian'
+import type { App, TFile, ReferenceCache } from 'obsidian'
 import type { Bow, Document, WinkMethods } from 'wink-nlp'
+import type GraphAnalysisPlugin from './main'
+import type AnalysisView from './AnalysisView'
 
 export interface ResolvedLinks {
   [from: string]: {
@@ -101,6 +103,15 @@ export interface GraphAnalysisSettings {
   exclusionRegex: string
   exclusionTags: string[]
   algsToShow: Subtype[]
+}
+
+export interface AnalysisComponentProps {
+  app: App;
+  plugin: GraphAnalysisPlugin;
+  settings: GraphAnalysisSettings;
+  view: AnalysisView;
+  currSubtype: Subtype;
+  onUnmount?: (callback: () => void) => void;
 }
 
 export interface NLPPlugin {

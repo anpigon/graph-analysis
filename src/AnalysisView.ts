@@ -17,8 +17,9 @@ export default class AnalysisView extends ItemView {
     // throw new Error('Method not implemented.');
   }
   plugin: GraphAnalysisPlugin;
-  currSubtype: Subtype;
-  private root: Root;
+  currSubtype: Subtype = 'Co-Citations';
+  private root: Root | null = null;
+  private cleanupCallbacks: (() => void)[] = [];
 
   constructor(
     leaf: WorkspaceLeaf,
@@ -27,7 +28,7 @@ export default class AnalysisView extends ItemView {
   ) {
     super(leaf);
     this.plugin = plugin;
-    this.currSubtype = currSubtype || 'Co-Citations';
+    if (currSubtype) this.currSubtype = currSubtype;
   }
 
   getViewType(): string {
@@ -41,15 +42,23 @@ export default class AnalysisView extends ItemView {
   icon = 'GA-ICON';
 
   async onOpen(): Promise<void> {
-    this.root = createRoot(this.containerEl.children[1]);
+    const contentEl = this.containerEl.children.length > 1 
+      ? this.containerEl.children[1] 
+      : this.containerEl.createDiv();
+    this.root = createRoot(contentEl);
     await this.draw(this.currSubtype ?? this.plugin.settings.defaultSubtypeType);
   }
 
   async onClose(): Promise<void> {
-    this.root.unmount();
+    this.cleanupCallbacks.forEach(cb => cb());
+    this.cleanupCallbacks = [];
+    this.root?.unmount();
+    this.root = null;
   }
 
   async draw(currSubtype: Subtype): Promise<void> {
+    if (!this.root) return;
+
     const { app } = this;
     const { settings } = this.plugin;
 
@@ -60,6 +69,9 @@ export default class AnalysisView extends ItemView {
         settings,
         view: this,
         currSubtype,
+        onUnmount: (callback: () => void) => {
+          this.cleanupCallbacks.push(callback);
+        }
       })
     );
   }
