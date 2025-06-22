@@ -45,6 +45,7 @@ export default class AnalysisView extends ItemView {
     const contentEl = this.containerEl.children.length > 1 
       ? this.containerEl.children[1] 
       : this.containerEl.createDiv();
+    contentEl.addClass('graph-analysis-plugin')
     this.root = createRoot(contentEl);
     await this.draw(this.currSubtype ?? this.plugin.settings.defaultSubtypeType);
   }
