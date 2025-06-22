@@ -135,17 +135,30 @@ const TableComponent: React.FC<TableComponentProps> = ({
 
   return (
     <div>
-      <SubtypeOptions
-        currSubtypeInfo={currSubtypeInfo}
-        ascOrder={ascOrder}
-        setAscOrder={setAscOrder}
-        frozen={frozen}
-        setFrozen={setFrozen}
-        currFile={currNode}
-        app={app}
-        plugin={plugin}
-        view={view}
-      />
+      {currSubtypeInfo && (
+        <SubtypeOptions
+          currSubtypeInfo={currSubtypeInfo}
+          ascOrder={ascOrder}
+          setAscOrder={setAscOrder}
+          frozen={frozen}
+          setFrozen={setFrozen}
+          currFile={app.workspace.getActiveFile()}
+          app={app}
+          plugin={plugin}
+          view={view}
+          noZero={noZero}
+          setNoZero={(value) => {
+            settings.noZero = value;
+            plugin.saveSettings();
+          }}
+          sortedResults={sortedResults}
+          setSortedResults={setSortedResults}
+          visibleData={visibleData}
+          setVisibleData={setVisibleData}
+          page={page}
+          setPage={setPage}
+        />
+      )}
       <InfiniteScroll
         dataLength={visibleData.length}
         next={loadMoreData}

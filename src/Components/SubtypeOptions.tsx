@@ -1,19 +1,38 @@
 import * as React from 'react';
-import type { App } from 'obsidian';
+import type { App, TFile } from 'obsidian';
 import type AnalysisView from '../AnalysisView';
-import type { GraphAnalysisSettings, Subtype, SubtypeInfo } from '../Interfaces';
+import type { SubtypeInfo } from '../Interfaces';
 import type GraphAnalysisPlugin from '../main';
 import InfoIcon from './InfoIcon';
+import { 
+  FaCreativeCommonsZero, 
+  FaFire, 
+  FaRegSnowflake 
+} from 'react-icons/fa';
+import { 
+  IoIosTrendingDown, 
+  IoIosTrendingUp, 
+  IoMdRefresh 
+} from 'react-icons/io';
+import { 
+  MdExposureZero 
+} from 'react-icons/md';
+import { 
+  GoSignIn, 
+  GoSignOut 
+} from 'react-icons/go';
 
 interface SubtypeOptionsProps {
-  currSubtypeInfo: SubtypeInfo | undefined;
+  currSubtypeInfo: SubtypeInfo;
+  noZero?: boolean | undefined;
+  setNoZero?: React.Dispatch<React.SetStateAction<boolean>> | undefined;
+  sortBy?: boolean;
+  setSortBy?: React.Dispatch<React.SetStateAction<boolean>>;
   ascOrder: boolean;
   setAscOrder: React.Dispatch<React.SetStateAction<boolean>>;
   frozen?: boolean;
   setFrozen?: React.Dispatch<React.SetStateAction<boolean>>;
-  sortBy?: boolean;
-  setSortBy?: React.Dispatch<React.SetStateAction<boolean>>;
-  currFile: string;
+  currFile: TFile | null;
   app: App;
   plugin: GraphAnalysisPlugin;
   view: AnalysisView;
@@ -30,12 +49,16 @@ interface SubtypeOptionsProps {
 }
 
 const SubtypeOptions: React.FC<SubtypeOptionsProps> = ({
+  currSubtypeInfo,
+  noZero,
+  setNoZero,
+  sortBy,
+  setSortBy,
   ascOrder,
   setAscOrder,
   frozen,
   setFrozen,
   currFile,
-  currSubtypeInfo,
   app,
   plugin,
   view,
@@ -50,35 +73,153 @@ const SubtypeOptions: React.FC<SubtypeOptionsProps> = ({
   page,
   setPage,
 }) => {
+  const styles = {
+    subtypeOptions: {
+      marginLeft: '10px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '5px'
+    },
+    optionSpan: {
+      padding: '2px',
+      cursor: 'pointer',
+      display: 'inline-flex',
+      alignItems: 'center'
+    },
+    icon: {
+      color: 'var(--text-normal)',
+      paddingTop: '5px',
+      width: '20px',
+      height: '20px'
+    }
+  };
+
+  const handleNoZeroToggle = () => {
+    if (setNoZero) {
+      setNoZero(!noZero);
+      if (!frozen && setNewBatch && setVisibleData && setSortedResults && setPage) {
+        if (setBlockSwitch) setBlockSwitch(true);
+        setNewBatch([]);
+        setVisibleData([]);
+        setSortedResults(null);
+        setPage(0);
+      }
+    }
+  };
+
+  const handleAscOrderToggle = () => {
+    setAscOrder(!ascOrder);
+    if (!frozen && setNewBatch && setVisibleData && setSortedResults && setPage) {
+      if (setBlockSwitch) setBlockSwitch(true);
+      setNewBatch([]);
+      setVisibleData([]);
+      setSortedResults(null);
+      setPage(0);
+    }
+  };
+
+  const handleFrozenToggle = () => {
+    if (setFrozen) {
+      setFrozen(!frozen);
+      if (!frozen && !currSubtypeInfo.global && setNewBatch && setVisibleData && setSortedResults && setPage) {
+        if (setBlockSwitch) setBlockSwitch(true);
+        setNewBatch([]);
+        setVisibleData([]);
+        setSortedResults(null);
+        setPage(0);
+        setTimeout(() => {
+          // currFile 업데이트 로직 (부모 컴포넌트에서 처리)
+        }, 100);
+      } else if (!frozen && currSubtypeInfo.global && setNewBatch) {
+        if (setBlockSwitch) setBlockSwitch(true);
+        setTimeout(() => {
+          if (setBlockSwitch) setBlockSwitch(false);
+          // currFile 업데이트 로직 (부모 컴포넌트에서 처리)
+        }, 100);
+        setNewBatch([]);
+      }
+    }
+  };
+
+  const handleSortByToggle = () => {
+    if (setSortBy) {
+      setSortBy(!sortBy);
+      if (!frozen && setNewBatch && setVisibleData && setSortedResults && setPage) {
+        if (setBlockSwitch) setBlockSwitch(true);
+        setNewBatch([]);
+        setVisibleData([]);
+        setSortedResults(null);
+        setPage(0);
+      }
+    }
+  };
+
+  const handleRefresh = async () => {
+    await plugin.refreshGraph();
+    await view.draw(currSubtypeInfo.subtype);
+  };
+
   return (
-    <div className="GA-options">
-      <div className="GA-option">
-        <label>
-          <input
-            type="checkbox"
-            checked={frozen}
-            onChange={(e) => setFrozen?.(e.target.checked)}
-          />
-          Freeze
-        </label>
-      </div>
-      
-      <div className="GA-option">
-        <label>
-          <input
-            type="checkbox"
-            checked={ascOrder}
-            onChange={(e) => setAscOrder(e.target.checked)}
-          />
-          Ascending
-        </label>
-      </div>
-      
-      {currSubtypeInfo && (
-        <div className="GA-info">
-          <InfoIcon currSubtypeInfo={currSubtypeInfo} />
-        </div>
+    <div style={styles.subtypeOptions}>
+      <InfoIcon currSubtypeInfo={currSubtypeInfo} />
+
+      {noZero !== undefined && setNoZero && (
+        <span
+          style={styles.optionSpan}
+          aria-label={noZero ? 'Show Zeros' : 'Hide Zeros'}
+          onClick={handleNoZeroToggle}
+        >
+          <span style={styles.icon}>
+            {noZero ? <MdExposureZero /> : <FaCreativeCommonsZero />}
+          </span>
+        </span>
       )}
+
+      {ascOrder !== undefined && (
+        <span
+          style={styles.optionSpan}
+          aria-label={ascOrder ? 'Ascending' : 'Descending'}
+          onClick={handleAscOrderToggle}
+        >
+          <span style={styles.icon}>
+            {ascOrder ? <IoIosTrendingUp /> : <IoIosTrendingDown />}
+          </span>
+        </span>
+      )}
+
+      {frozen !== undefined && setFrozen && (
+        <span
+          style={styles.optionSpan}
+          aria-label={frozen ? `Frozen on: ${currFile?.basename || 'No file'}` : 'Unfrozen'}
+          onClick={handleFrozenToggle}
+        >
+          <span style={styles.icon}>
+            {frozen ? <FaRegSnowflake /> : <FaFire />}
+          </span>
+        </span>
+      )}
+
+      {sortBy !== undefined && setSortBy && (
+        <span
+          style={styles.optionSpan}
+          aria-label={`Sort By: ${sortBy ? 'Authority' : 'Hub'}`}
+          onClick={handleSortByToggle}
+        >
+          <span style={styles.icon}>
+            {sortBy ? <GoSignIn /> : <GoSignOut />}
+          </span>
+        </span>
+      )}
+
+      <span
+        style={styles.optionSpan}
+        aria-label="Refresh Index"
+        onClick={handleRefresh}
+      >
+        <span style={styles.icon}>
+          <IoMdRefresh />
+        </span>
+      </span>
     </div>
   );
 };
