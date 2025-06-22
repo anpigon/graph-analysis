@@ -57,14 +57,14 @@
     }
 
     .currSubtype {
-      @apply ga-font-extrabold ga-text-text-accent
+      @apply ga-font-extrabold ga-text-text-accent;
     }
 
     .container > button:last-child {
       @apply ga-mr-2;
     }
     .container > button:first-child {
-      @apply ga-ml-2
+      @apply ga-ml-2;
     }
 
     .item:hover {
@@ -74,6 +74,29 @@
 
   .info-icon {
     @apply ga-w-5 ga-h-5 ga-text-text-normal ga-pt-1 ga-inline-block;
+  }
+
+  .table-container {
+    table.GA-table {
+      border-collapse: collapse;
+    }
+    table.GA-table,
+    table.GA-table tr,
+    table.GA-table td {
+      border: 1px solid var(--background-modifier-border);
+    }
+
+    table.GA-table td {
+      padding: 2px;
+    }
+
+    .is-unresolved {
+      color: var(--text-muted);
+    }
+
+    .GA-node {
+      overflow: hidden;
+    }
   }
 }
 

@@ -134,7 +134,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
   };
 
   return (
-    <div>
+    <div className="table-container">
       {currSubtypeInfo && (
         <SubtypeOptions
           currSubtypeInfo={currSubtypeInfo}
