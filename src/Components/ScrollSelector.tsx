@@ -1,6 +1,9 @@
 import * as React from 'react';
 import type { Subtype } from '../Interfaces';
 import type AnalysisView from '../AnalysisView';
+import { ANALYSIS_TYPES } from '../Constants';
+import { FaGlobeAfrica } from 'react-icons/fa';
+import { IoIosChatbubbles } from 'react-icons/io';
 
 interface ScrollSelectorProps {
   currSubtype: Subtype;
@@ -8,43 +11,51 @@ interface ScrollSelectorProps {
   view: AnalysisView;
 }
 
-const SUBTYPE_OPTIONS: Subtype[] = [
-  'Co-Citations',
-  'HITS',
-  'Jaccard',
-  'Adamic Adar',
-  'Label Propagation',
-  'Louvain',
-  'Overlap',
-  'Clustering Coefficient',
-  'BoW',
-  'Otsuka-Chiai',
-  'Sentiment'
-];
-
 const ScrollSelector: React.FC<ScrollSelectorProps> = ({
   currSubtype,
   onSubtypeChange,
   view
 }) => {
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedSubtype = event.target.value as Subtype;
-    onSubtypeChange(selectedSubtype);
-  };
+  if (view.plugin.settings.algsToShow.length <= 1) {
+    return null;
+  }
 
   return (
-    <div className="scroll-selector">
-      <select 
-        value={currSubtype} 
-        onChange={handleChange}
-        className="dropdown"
-      >
-        {SUBTYPE_OPTIONS.map((subtype) => (
-          <option key={subtype} value={subtype}>
-            {subtype}
-          </option>
-        ))}
-      </select>
+    <div 
+      className="scrollContainer"
+      aria-label="Shift + Scroll to scroll sideways"
+    >
+      <div className="container">
+        {ANALYSIS_TYPES.map((sub) => {
+          if (!view.plugin.settings.algsToShow.includes(sub.subtype)) {
+            return null;
+          }
+
+          return (
+            <button
+              key={sub.subtype}
+              className={`item GA-Button ${
+                currSubtype === sub.subtype ? 'currSubtype' : ''
+              }`}
+              onClick={() => {
+                onSubtypeChange(sub.subtype);
+              }}
+            >
+              {sub.global && (
+                <span className="icon">
+                  <FaGlobeAfrica />
+                </span>
+              )}
+              {sub.nlp && (
+                <span className="icon">
+                  <IoIosChatbubbles />
+                </span>
+              )}
+              {sub.subtype}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };

@@ -51,6 +51,40 @@
     border-radius: 0.25rem;
     animation: highlightSentence 1.5s 1;
   }
+
+  /* ScrollSelector 스타일 */
+  .GA-Button {
+    width: fit-content !important;
+    padding: 8px 5px !important;
+    margin-right: 0px;
+  }
+
+  .item {
+    display: inline-block;
+    border: 1px solid transparent;
+    background-color: var(--background-primary-alt);
+    border-radius: 10px;
+    color: var(--text-normal);
+    text-align: center;
+    padding: 0px 4px;
+    margin: 0px 3px;
+    width: fit-content;
+    font-size: small;
+  }
+
+  .currSubtype {
+    font-weight: 800 !important;
+    color: var(--text-accent) !important;
+  }
+
+  .item:hover {
+    background-color: var(--interactive-accent);
+  }
+
+  .icon {
+    margin-right: 4px;
+    vertical-align: middle;
+  }
   
   /* 스크롤바 스타일 */
   .ga-scrollbar::-webkit-scrollbar {
@@ -197,6 +231,18 @@ button.GA-Refresh-Button {
 
 .scrollContainer:hover {
   padding: 0px;
+}
+
+.container {
+  overflow: auto;
+  white-space: nowrap;
+}
+
+.container > button:last-child {
+  margin-right: 10px;
+}
+.container > button:first-child {
+  margin-left: 10px;
 }
 
 div.CC-sentence > ul,
