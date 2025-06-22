@@ -38,44 +38,37 @@
 
 @layer components {
   .scrollContainer {
+    @apply ga-overflow-x-auto;
+
     .container {
-      overflow: auto;
-      white-space: nowrap;
+      @apply ga-overflow-auto ga-whitespace-nowrap;
     }
 
     .GA-Button {
+      @apply ga-mr-0;
       width: fit-content !important;
       padding: 8px 5px !important;
-      margin-right: 0px;
     }
 
     .item {
-      display: inline-block;
+      @apply ga-bg-background-primary-alt ga-text-text-normal ga-inline-block ga-border ga-rounded-m ga-text-center ga-px-1 ga-py-0 ga-mx-1 ga-w-fit;
       border: 1px solid transparent;
-      background-color: var(--background-primary-alt);
-      border-radius: 10px;
-      color: var(--text-normal);
-      text-align: center;
-      padding: 0px 4px;
-      margin: 0px 3px;
-      width: fit-content;
       font-size: small;
     }
 
     .currSubtype {
-      font-weight: 800 !important;
-      color: var(--text-accent) !important;
+      @apply ga-font-extrabold ga-text-text-accent
     }
 
     .container > button:last-child {
-      margin-right: 10px;
+      @apply ga-mr-2;
     }
     .container > button:first-child {
-      margin-left: 10px;
+      @apply ga-ml-2
     }
 
     .item:hover {
-      background-color: var(--interactive-accent);
+      @apply ga-bg-interactive-accent;
     }
   }
 }
