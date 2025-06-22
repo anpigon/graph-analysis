@@ -142,6 +142,7 @@ const HITS: React.FC<HITSProps> = ({
         hasMore={visibleData.length < sortedResults.length}
         loader={<h4>Loading...</h4>}
         scrollableTarget="scrollableDiv"
+        className='table-container'
       >
         <table className="ga-hits-table markdown-preview-view" ref={currentComponentRef}>
           <thead>

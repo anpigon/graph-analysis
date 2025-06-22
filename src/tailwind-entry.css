@@ -166,10 +166,6 @@
     .currComm {
       color: var(--text-accent);
     }
-
-    .currNode {
-      font-weight: bold;
-    }
   }
 
   .GA-CC {
@@ -226,6 +222,14 @@
       color: var(--text-accent);
     }
   }
+
+  .GA-checkboxes-container {
+    @apply ga-space-y-2 ga-mb-2;
+
+    .GA-grid {
+      @apply ga-grid ga-grid-cols-3 ga-gap-2;
+    }
+  }
 }
 
 /* 모바일 특화 스타일 */
@@ -250,5 +254,9 @@
     height: 13px;
     display: inline-block;
     padding-top: 2px !important;
+  }
+
+  .currNode {
+    font-weight: bold;
   }
 }
