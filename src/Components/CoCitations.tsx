@@ -1,4 +1,5 @@
 import * as React from 'react';
+/* CSS 모듈 대신 Tailwind 클래스 사용 */
 import { useState, useEffect, useRef } from 'react';
 import type { App } from 'obsidian';
 import type AnalysisView from '../AnalysisView';
@@ -82,7 +83,8 @@ const CoCitations: React.FC<CoCitationsProps> = ({
   const [sortedResults, setSortedResults] = useState<CoCiteComp[] | null>(null);
   
   const currentComponentRef = useRef<HTMLDivElement>(null);
-  const currSubtypeInfo = ANALYSIS_TYPES.find((sub) => sub.subtype === currSubtype);
+  const currSubtypeInfo = ANALYSIS_TYPES.find((sub) => sub.subtype === currSubtype)!;
+  // ! 연산자 사용으로 undefined가 아님을 보장 (ANALYSIS_TYPES에 항상 존재하는 값)
 
   useEffect(() => {
     const activeFile = app.workspace.getActiveFile();
@@ -181,7 +183,7 @@ const CoCitations: React.FC<CoCitationsProps> = ({
   };
 
   return (
-    <div className="GA-CCs" ref={currentComponentRef}>
+    <div className="ga-GA-CCs" ref={currentComponentRef}>
       <SubtypeOptions
         ascOrder={ascOrder}
         setAscOrder={setAscOrder}
@@ -214,7 +216,7 @@ const CoCitations: React.FC<CoCitationsProps> = ({
                   <summary>
                     <span className="top-row">
                       <span
-                        className={`${classExt(node.to)} ${node.linked ? LINKED : NOT_LINKED} ${NODE}`}
+                        className={`${classExt(node.to)} ${node.linked ? 'ga-' + LINKED : 'ga-' + NOT_LINKED} ga-${NODE}`}
                         onClick={async (e: React.MouseEvent) => {
                           if (node.to[0] !== '#') {
                             await openOrSwitch(app, node.to, e.nativeEvent);
@@ -234,14 +236,14 @@ const CoCitations: React.FC<CoCitationsProps> = ({
                         ) : (
                           <>
                             {node.linked && (
-                              <span className={ICON}>
+                              <span className={'ga-' + ICON}>
                                 {React.createElement(FaLink as React.FC)}
                               </span>
                             )}
                             <ExtensionIcon path={node.to} />
                             <span
-                              className={`internal-link ${
-                                node.resolved ? '' : 'is-unresolved'
+                              className={`ga-internal-link ${
+                                node.resolved ? '' : 'ga-is-unresolved'
                               }`}
                             >
                               {presentPath(node.to)}
@@ -255,14 +257,14 @@ const CoCitations: React.FC<CoCitationsProps> = ({
                           </>
                         )}
                       </span>
-                      <span className={MEASURE}>{roundNumber(node.measure, 3)}</span>
+                      <span className="ga-GA-measure">{roundNumber(node.measure, 3)}</span>
                     </span>
                   </summary>
                   <div className="GA-details">
                     {node.coCitations.map((coCite, coIndex) => (
                       <div key={coIndex} className="CC-item">
                         <span
-                          className={`internal-link ${NODE}`}
+                          className="ga-internal-link ga-${NODE}"
                         onClick={async (e: React.MouseEvent) => await openOrSwitch(app, coCite.source, e.nativeEvent)}
                         onContextMenu={(e: React.MouseEvent) => openMenu(e.nativeEvent, app)}
                         onMouseOver={(e: React.MouseEvent) =>
@@ -275,15 +277,11 @@ const CoCitations: React.FC<CoCitationsProps> = ({
                         >
                           {presentPath(coCite.source)}
                         </span>
-                        <span className={MEASURE}>
+                        <span className="ga-GA-measure">
                           {roundNumber(coCite.measure, 3)}
                         </span>
                         <RenderedMarkdown
-                          sentence={
-                            Array.isArray(coCite.sentence)
-                              ? coCite.sentence.join(' ')
-                              : coCite.sentence
-                          }
+                          sentence={coCite.sentence}  // 이미 string[] 타입으로 정의됨
                           sourcePath={coCite.source}
                           app={app}
                           line={coCite.line}

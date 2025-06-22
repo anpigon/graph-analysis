@@ -1,398 +1,42 @@
-/* 
- * 코딩 규칙:
- * 1. UI 스타일은 TailwindCSS를 우선적으로 사용합니다 (prefix: 'ga-')
- * 2. 추가적인 CSS는 이 파일에 작성해주세요
- * 3. Tailwind로 처리하기 어려운 복잡한 스타일만 여기에 정의
- */
-
-/* Tailwind CSS 기본 설정 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Graph Analysis 플러그인 컨테이너 */
-.graph-analysis-plugin {
-  /* 플러그인 전체를 감싸는 컨테이너 클래스 */
+/* CoCitations 컴포넌트 스타일 */
+.ga-GA-CCs {
+  @apply ga-flex ga-flex-col ga-pl-2.5;
 }
 
-/* 기존 스타일을 Tailwind 레이어로 통합 */
-@layer components {
-  /* Internal Link 스타일 */
-  .ga-internal-link {
-    color: var(--text-accent);
-    text-decoration: none;
-  }
-  
-  .ga-internal-link:hover {
-    color: var(--text-accent-hover, var(--text-accent));
-  }
-  
-  /* Graph Analysis 전용 스타일 */
-  .ga-icon {
-    width: 0.75rem;
-    height: 0.75rem;
-    display: inline-block;
-    color: var(--text-normal);
-    padding-top: 2px !important;
-  }
-
-  .info-icon {
-    color: var(--text-normal);
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    padding-top: 3px !important;
-  }
-  
-  .ga-global {
-    color: #ef4444;
-  }
-  .ga-global::before {
-    content: '🌍';
-  }
-  
-  .ga-dropdown {
-    line-height: normal;
-    width: fit-content;
-    padding: 0.2em 1.9em 0.2em 0.4em;
-  }
-  
-  .ga-refresh-button {
-    margin-left: 0.25rem;
-    padding: 0.25rem;
-  }
-  
-  .ga-highlight-sentence {
-    border-radius: 0.25rem;
-    animation: highlightSentence 1.5s 1;
-  }
-
-  /* ScrollSelector 스타일 */
-  .GA-Button {
-    width: fit-content !important;
-    padding: 8px 5px !important;
-    margin-right: 0px;
-  }
-
-  .item {
-    display: inline-block;
-    border: 1px solid transparent;
-    background-color: var(--background-primary-alt);
-    border-radius: 10px;
-    color: var(--text-normal);
-    text-align: center;
-    padding: 0px 4px;
-    margin: 0px 3px;
-    width: fit-content;
-    font-size: small;
-  }
-
-  .currSubtype {
-    font-weight: 800 !important;
-    color: var(--text-accent) !important;
-  }
-
-  .item:hover {
-    background-color: var(--interactive-accent);
-  }
-
-  .icon {
-    margin-right: 4px;
-    vertical-align: middle;
-  }
-
-  /* ImgThumbnail 스타일 */
-  .GA-img-container {
-    display: inline-block;
-    overflow: hidden;
-    margin: 4px;
-    position: relative;
-  }
-
-  .GA-img-thumbnail {
-    max-width: 25%;
-    max-height: 25%;
-    transition: all 0.3s ease;
-    display: block;
-    cursor: pointer;
-    object-fit: contain;
-  }
-
-  .GA-img-thumbnail:hover {
-    max-width: 100%;
-    max-height: 100%;
-    z-index: 10;
-    position: relative;
-  }
-
-  .GA-img-loading,
-  .GA-img-error {
-    padding: 8px;
-    color: #666;
-    font-size: 0.8em;
-    text-align: center;
-    border: 1px dashed #ddd;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-  }
-
-  .GA-img-error {
-    color: #d32f2f;
-    border-color: #ffcdd2;
-    background-color: #ffebee;
-  }
-
-  .GA-img-loading::after {
-    content: "...";
-    animation: dots 1.5s steps(5, end) infinite;
-  }
-
-  @keyframes dots {
-    0%, 20% { content: "."; }
-    40% { content: ".."; }
-    60%, 100% { content: "..."; }
-  }
-  
-  /* 스크롤바 스타일 */
-  .ga-scrollbar::-webkit-scrollbar {
-    width: 1rem;
-    height: 0px;
-    border-radius: 0.5rem;
-    background-color: var(--scrollbar-bg);
-  }
-  
-  .ga-scroll-container {
-    padding: 0px 0px 4px 0px;
-  }
-  
-  .ga-scroll-container:hover {
-    padding: 0px;
-  }
-  
-  .ga-scroll-container:hover .ga-scrollbar::-webkit-scrollbar {
-    height: 0.25rem;
-  }
-  
-  .ga-scrollbar::-webkit-scrollbar-track {
-    border-radius: 0.5rem;
-  }
-  
-  .ga-scrollbar::-webkit-scrollbar-thumb {
-    border-radius: 0.5rem;
-    background-color: var(--scrollbar-thumb-bg);
-  }
-  
-  /* Co-Citations 관련 스타일 */
-  .ga-cc-sentence > ul,
-  .ga-cc-sentence > ol,
-  .ga-cc-sentence > p {
-    margin: 0;
-  }
-  
-  .ga-cc-mark {
-    color: var(--text-normal);
-    background-color: var(--text-highlight-bg);
-  }
-  
-  .ga-cc-edit {
-    margin: 0;
-  }
-  
-  .ga-cc-hr {
-    margin-block-start: 0.3em;
-    margin-block-end: 0.3em;
-  }
+.ga-is-unresolved {
+  @apply ga-text-muted;
 }
 
-/* 모바일 특화 스타일 */
-@layer utilities {
-  body.is-mobile .ga-details,
-  body.is-mobile .ga-details::before {
-    font-size: 1.125rem;
-  }
+.ga-tag {
+  @apply ga-rounded-[15px] !important;
 }
 
-/* 레거시 지원을 위한 기존 클래스명 유지 */
-td.internal-link,
-div.internal-link,
-span.internal-link {
-  color: var(--text-accent);
-  text-decoration: none;
+.ga-GA-node,
+.ga-CC-sentence {
+  @apply ga-text-secondary ga-border ga-border-transparent ga-rounded;
+  font-size: var(--font-size-secondary);
 }
 
-td.internal-link:hover,
-div.internal-link:hover,
-span.internal-link:hover {
-  color: var(--text-accent-hover, var(--text-accent));
+.ga-CC-sentence:hover {
+  @apply ga-bg-secondary-alt;
 }
 
-tr.GA-linked td:first-child::before,
-span.GA-linked::before,
-div.GA-linked::before {
+.ga-GA-measure {
+  @apply ga-bg-secondary-alt ga-px-1 ga-py-0.5 ga-rounded ga-text-xs ga-leading-3;
 }
 
-tr.GA-not-linked,
-span.GA-not-linked {
-  /* background-color: yellow; */
+.ga-GA-measure:hover {
+  @apply ga-bg-accent;
 }
 
-.GA-icon {
-  width: 0.75rem;
-  height: 0.75rem;
-  display: inline-block;
-  color: var(--text-normal);
-  padding-top: 2px !important;
+.ga-CC-item {
+  @apply ga-pl-7 ga-font-semibold;
 }
 
-.GA-Global {
-  color: #ef4444;
-}
-
-td.GA-measure {
-  /* display:none */
-}
-
-td.GA-node {
-  /* background-color: yellow */
-}
-
-select.dropdown.GA-DD {
-  line-height: normal;
-  width: fit-content;
-  padding: 0.2em 1.9em 0.2em 0.4em;
-}
-
-button.GA-Refresh-Button {
-  margin-left: 0.25rem;
-  padding: 0.25rem;
-}
-
-.GA-highlight-sentence {
-  border-radius: 0.25rem;
-  animation: highlightSentence 1.5s 1;
-}
-
-.GA-View ::-webkit-scrollbar {
-  width: 1rem;
-  height: 0px;
-  border-radius: 0.5rem;
-  background-color: var(--scrollbar-bg);
-}
-
-.GA-View .scrollContainer:hover ::-webkit-scrollbar {
-  height: 0.25rem;
-}
-
-.GA-View ::-webkit-scrollbar-track {
-  border-radius: 0.5rem;
-}
-
-.GA-View ::-webkit-scrollbar-thumb {
-  border-radius: 0.5rem;
-  background-color: var(--scrollbar-thumb-bg);
-}
-
-.scrollContainer {
-  padding: 0px 0px 4px 0px;
-}
-
-.scrollContainer:hover {
-  padding: 0px;
-}
-
-.container {
-  overflow: auto;
-  white-space: nowrap;
-}
-
-.container > button:last-child {
-  margin-right: 10px;
-}
-.container > button:first-child {
-  margin-left: 10px;
-}
-
-div.CC-sentence > ul,
-div.CC-sentence > ol,
-div.CC-sentence > p {
-  margin: 0;
-}
-
-mark.CC-mark {
-  color: var(--text-normal);
-  background-color: var(--text-highlight-bg);
-}
-
-.CC-edit {
-  margin: 0;
-}
-
-.CC-hr {
-  margin-block-start: 0.3em;
-  margin-block-end: 0.3em;
-}
-
-/* Checkboxes grid layout */
-.GA-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-}
-
-/* HITS 컴포넌트 스타일 */
-@layer components {
-  .ga-hits-table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  .ga-hits-table,
-  .ga-hits-table tr,
-  .ga-hits-table td {
-    border: 1px solid var(--background-modifier-border);
-  }
-
-  .ga-hits-table th,
-  .ga-hits-table td {
-    padding: 8px;
-    text-align: left;
-  }
-
-  .ga-hits-table th {
-    background-color: var(--background-primary-alt);
-  }
-
-  .ga-unresolved {
-    color: var(--text-muted);
-    opacity: 0.7;
-  }
-
-  .ga-node {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .ga-current-node {
-    font-weight: bold;
-    color: var(--text-accent);
-  }
-
-  .ga-hits-scroll-container {
-    height: 70vh;
-    overflow: auto;
-    margin-top: 10px;
-  }
-
-  .ga-internal-link {
-    cursor: pointer;
-    text-decoration: none;
-  }
-
-  .ga-internal-link:hover {
-    text-decoration: underline;
-  }
-
-  .ga-hits-table tr:hover {
-    background-color: var(--background-primary-alt);
-  }
+.ga-top-row > span + span {
+  @apply ga-float-right;
 }
