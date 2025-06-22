@@ -1,42 +1,89 @@
+/* 
+ * 코딩 규칙:
+ * 1. UI 스타일은 TailwindCSS를 우선적으로 사용합니다 (prefix: 'ga-')
+ * 2. 추가적인 CSS는 이 파일에 작성해주세요
+ * 3. Tailwind로 처리하기 어려운 복잡한 스타일만 여기에 정의
+ */
+
+/* Tailwind CSS 기본 설정 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* CoCitations 컴포넌트 스타일 */
-.ga-GA-CCs {
-  @apply ga-flex ga-flex-col ga-pl-2.5;
+@layer base {
+  /* 애니메이션 */
+  @keyframes highlightSentence {
+    0% {
+      background-color: var(--text-highlight-bg);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+
+  @keyframes dots {
+    0%,
+    20% {
+      content: '.';
+    }
+    40% {
+      content: '..';
+    }
+    60%,
+    100% {
+      content: '...';
+    }
+  }
 }
 
-.ga-is-unresolved {
-  @apply ga-text-muted;
+@layer components {
+  .scrollContainer {
+    .container {
+      overflow: auto;
+      white-space: nowrap;
+    }
+
+    .GA-Button {
+      width: fit-content !important;
+      padding: 8px 5px !important;
+      margin-right: 0px;
+    }
+
+    .item {
+      display: inline-block;
+      border: 1px solid transparent;
+      background-color: var(--background-primary-alt);
+      border-radius: 10px;
+      color: var(--text-normal);
+      text-align: center;
+      padding: 0px 4px;
+      margin: 0px 3px;
+      width: fit-content;
+      font-size: small;
+    }
+
+    .currSubtype {
+      font-weight: 800 !important;
+      color: var(--text-accent) !important;
+    }
+
+    .container > button:last-child {
+      margin-right: 10px;
+    }
+    .container > button:first-child {
+      margin-left: 10px;
+    }
+
+    .item:hover {
+      background-color: var(--interactive-accent);
+    }
+  }
 }
 
-.ga-tag {
-  @apply ga-rounded-[15px] !important;
-}
-
-.ga-GA-node,
-.ga-CC-sentence {
-  @apply ga-text-secondary ga-border ga-border-transparent ga-rounded;
-  font-size: var(--font-size-secondary);
-}
-
-.ga-CC-sentence:hover {
-  @apply ga-bg-secondary-alt;
-}
-
-.ga-GA-measure {
-  @apply ga-bg-secondary-alt ga-px-1 ga-py-0.5 ga-rounded ga-text-xs ga-leading-3;
-}
-
-.ga-GA-measure:hover {
-  @apply ga-bg-accent;
-}
-
-.ga-CC-item {
-  @apply ga-pl-7 ga-font-semibold;
-}
-
-.ga-top-row > span + span {
-  @apply ga-float-right;
+/* 모바일 특화 스타일 */
+@layer utilities {
+  body.is-mobile .ga-details,
+  body.is-mobile .ga-details::before {
+    @apply ga-text-lg;
+  }
 }
